@@ -6,7 +6,8 @@ import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
 file_name = "Prelim Test 001.csv"
-folder = "C:\\Users\\mskinner\\NREL\Water Power Equipment - Motion Platform (LAMP)\LAMP Characterization\Characterization Data\Results"
+folder = "C:\\Users\\skinn\\Documents\GitHub\Stewart-Platform-Characterization\Characterization Data\Results"
+#folder = "C:\\Users\\mskinner\\NREL\Water Power Equipment - Motion Platform (LAMP)\LAMP Characterization\Characterization Data\Results"
 
 plotResponse = True
 plotSorted = True
