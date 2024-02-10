@@ -5,8 +5,8 @@ import numpy as np
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "Prelim Test 001.csv"
-folder = "C:\\Users\\skinn\\Documents\GitHub\Stewart-Platform-Characterization\Characterization Data\Results"
+file_name = "Prelipipm Test 001.csv"
+folder = "C:\\Users\skinn\Documents\GitHub\Stewart-Platform-Characterization\Characterization Data\Results"
 #folder = "C:\\Users\\mskinner\\NREL\Water Power Equipment - Motion Platform (LAMP)\LAMP Characterization\Characterization Data\Results"
 
 plotResponse = True
@@ -18,6 +18,9 @@ dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 2
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
 
 full_file = os.path.join(folder, file_name)
+print(" ")
+print(full_file)
+print(" ")
 with open(full_file, "r") as file:
     csvreader = csv.reader(file, delimiter=',')
     header = next(csvreader)
