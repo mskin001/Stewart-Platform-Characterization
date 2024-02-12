@@ -1,13 +1,14 @@
 import numpy as np
 import itertools as itt
 from matplotlib import pyplot as plt
+import scipy as sp
 
 #%% Initialize parameters
-test_DOF = np.array([0, 0, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
+test_DOF = np.array([0, 1, 0, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
 save_file_name = "Prelim 002"
-save_test_files = False
+save_test_files = True
 
-T = 100
+T = 180
 df = 1/T
 dt = 0.01
 f_range = [0.1, 6]
@@ -16,7 +17,6 @@ peak_ampl = 2 #approximate peak amplitude, subject to change based on randomness
 atten = 0.75
 numPhases = 100
 reps = 1
-
 
 #%% Define frequency, omega, and time vectors
 numDOF = sum(test_DOF)
@@ -35,7 +35,6 @@ t_vec = t_vec.reshape((1,t_vec.size))
 
 nf = np.size(f_vec)
 nt = np.size(t_vec)
-
 
 #%% Construct randomized multisine arrays
 # Phase randomized between -pi and pi
@@ -93,6 +92,13 @@ for k in range(reps):
 vel = np.gradient(xt,dt, axis=0)
 acc = np.gradient(vel,dt, axis=0)
 
+#%% Find frequency spectrum
+host_spec = sp.fft.fft(xf)
+N = len(host_spec)
+n = np.arange(N)
+T = N/100
+freq = n/T
+
 #%% Save multisine in .csv files
 if save_test_files:
     test_vals = np.zeros((np.size(xt,0),6))
@@ -129,8 +135,10 @@ axs[1].grid(visible=1,which='major',axis='both')
 axs[2].plot(t_vec.T,acc)
 axs[2].set_ylabel("Acc [m/s^2]")
 axs[2].grid(visible=1,which='major',axis='both')
+
+plt.figure()
+plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
+plt.xlim((0,10))
+
 plt.show()
 print("Program Complete")
-
-
-

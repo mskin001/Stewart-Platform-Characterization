@@ -16,12 +16,8 @@ def freqDist(hostData, controlData):
     hostSpec = []
     contSpec = []
     for k in range(np.shape(hostData)[1]):
-        hostTemp = sp.fft.fft(hostData[:,0])
-        np.append(hostSpec,hostTemp,axis=0)
-        contTemp = sp.fft.fft(controlData[:,0])
-        np.append(contSpec,contTemp,axis=0)
-    print(np.shape(hostTemp))
-    print(np.shape(contTemp))
+        hostSpec = sp.fft.fft(hostData[:,k])
+        contSpec = sp.fft.fft(controlData[:,k])
     return hostSpec, contSpec
 
 

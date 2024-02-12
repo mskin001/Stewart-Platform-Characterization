@@ -11,9 +11,9 @@ folder = "Characterization Data\Results"
 sr = 100 # sample rate
 
 plotResponse = True
-plotSorted = False
-plotDiff = False
-plotDirComp = False
+plotSorted = True
+plotDiff = True
+plotDirComp = True
 plotSpec = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23],
@@ -52,13 +52,14 @@ for k in range(num_cols):
 # %% -----------------------------------------------------------------------------------------
 h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
-host_spec, cont_spec = lampDataFunc.freqDist(h2c_data[0::3], c2h_data[0::3])
+print(np.shape(h2c_data[:,0::3]))
+print(np.shape(c2h_data[:,0::3]))
+host_spec, cont_spec = lampDataFunc.freqDist(h2c_data[:,0::3], c2h_data[:,0::3])
 N = len(host_spec)
 n = np.arange(N)
 T = N/sr
 freq = n/T
-print(np.shape(host_spec))
-print(np.shape(cont_spec))
+
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
@@ -98,9 +99,8 @@ if plotDirComp == True:
 
 if plotSpec == True:
     plt.figure()
-    for k in range(np.shape(host_spec)[1]):
-        plt.stem(freq,np.abs(host_spec[:,k]), "b", markerfmt=" ", basefmt="-b")
-        plt.stem(freq,np.abs(cont_spec[:,k]), "r", markerfmt=" ", basefmt="-b")
+    plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
+    plt.stem(freq,np.abs(cont_spec), "r", markerfmt=" ", basefmt="-b")
     plt.xlim((0,7))
     #plt.stem(freq, np.abs(cont_spec))
 
