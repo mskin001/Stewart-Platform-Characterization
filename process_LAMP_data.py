@@ -5,14 +5,16 @@ import numpy as np
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "Prelipipm Test 001.csv"
-folder = "C:\\Users\skinn\Documents\GitHub\Stewart-Platform-Characterization\Characterization Data\Results"
-#folder = "C:\\Users\\mskinner\\NREL\Water Power Equipment - Motion Platform (LAMP)\LAMP Characterization\Characterization Data\Results"
+file_name = "Prelim Test 001.csv"
+folder = "Characterization Data\Results"
+
+sr = 1000 # sample rate
 
 plotResponse = True
-plotSorted = True
-plotDiff = True
-plotDirComp = True
+plotSorted = False
+plotDiff = False
+plotDirComp = False
+plotSpec = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
@@ -27,8 +29,8 @@ with open(full_file, "r") as file:
 
 raw_data = np.loadtxt(full_file, dtype='float', delimiter=',', skiprows=1)
 time_col = header.index("H2C time (us)")
-exp_time = raw_data[:,time_col]
-
+raw_time = raw_data[:,time_col]
+exp_time = (raw_time - raw_time[0]) / 100
 h2c_start = header.index("H2C surge P")
 h2c_cols = np.sum(raw_data[:,h2c_start:h2c_start+18], axis=0).nonzero()
 h2c_cols = h2c_cols[0] + h2c_start
@@ -49,53 +51,55 @@ for k in range(num_cols):
 # %% -----------------------------------------------------------------------------------------
 h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
+host_spec, cont_spec = lampDataFunc.freqDist(h2c_data, c2h_data)
+N = len(host_spec)
+n = np.arange(N)
+T = N/sr
+freq = n/T
+print(freq.shape)
+print(host_spec.shape)
 # %% -----------------------------------------------------------------------------------------
+units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
+         "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
+
 if plotResponse == True:
     fig, axs = plt.subplots(3)
     for k in range(num_cols):
         axs[k].plot(exp_time,h2c_data[:,k], label="Commanded")
         axs[k].plot(exp_time,c2h_data[:,k], label="Result")
-    axs[0].set_ylabel("Amplitude [m]")
-    axs[0].grid(visible=1,which='major',axis='both')
-    axs[1].set_ylabel("Vel [m/s]")
-    axs[1].grid(visible=1,which='major',axis='both')
-    axs[2].set_ylabel("Acc [m/s^2]")
-    axs[2].grid(visible=1,which='major',axis='both')
-    plt.xlabel("Time [s]")
+        axs[k].set_ylabel(units[k])
+        axs[k].grid(visible=1,which='major',axis='both')
     axs[0].legend()
+    plt.xlabel("Time [s]")
 
 if plotSorted == True:
     fig, sortplt = plt.subplots(3)
     for k in range(num_cols):
         sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,k], label="Commanded")
         sortplt[k].plot(np.arange(0,num_rows,1),c2h_sort[:,k], label="Result")
-    sortplt[0].set_ylabel("Position [m]")
-    sortplt[0].grid(visible=1,which="major",axis="both")
+        sortplt[k].set_ylabel(units[k])
+        sortplt[k].grid(visible=1,which="major",axis="both")
     sortplt[0].legend()
-    sortplt[1].set_ylabel("Velocity [m/s]")
-    sortplt[1].grid(visible=1,which="major",axis="both")
-    sortplt[2].set_ylabel("Acceleration [m/s^2]")
-    sortplt[2].grid(visible=1,which="major",axis="both")
     plt.xlabel("Index")
 
 if plotDiff == True:
     fig, diffPlt = plt.subplots(3)
     for k in range(num_cols):
         diffPlt[k].plot(h2c_sort[:,k],diff[:,k])
-    diffPlt[0].set_xlabel("Pos [m]")
-    diffPlt[0].set_ylabel("Residual")
-    diffPlt[0].grid(visible=1,which="major",axis="both")
-    diffPlt[1].set_xlabel("Vel [m/s]")
-    diffPlt[1].set_ylabel("Residual")
-    diffPlt[1].grid(visible=1,which="major",axis="both")
-    diffPlt[2].set_xlabel("Acc [m/s^2]")
-    diffPlt[2].set_ylabel("Residual")
-    diffPlt[2].grid(visible=1,which="major",axis="both")
+        diffPlt[k].set_xlabel(units[k])
+        diffPlt[k].set_ylabel("Residual")
+        diffPlt[k].grid(visible=1,which="major",axis="both")
     
 if plotDirComp == True:
     plt.figure()
     plt.plot(h2c_sort,c2h_sort)
     plt.legend(["Pos [m]", "Vel [m/s]", "Acc [m/s^2]"])
+
+if plotSpec == True:
+    plt.figure()
+    plt.stem(freq, host_spec, "b",
+         markerfmt=" ", basefmt="-b")
+    #plt.stem(freq, np.abs(cont_spec))
 
 print("Program Complete")
 plt.show()

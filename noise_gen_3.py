@@ -21,14 +21,14 @@ reps = 1
 #%% Define frequency, omega, and time vectors
 numDOF = sum(test_DOF)
 
-f_min = np.round(f_range[0] / df);
-f_max = np.round(f_range[1] / df);
+f_min = np.round(f_range[0] / df)
+f_max = np.round(f_range[1] / df)
 
 f_vec = np.arange(f_min, f_max+df, 1, dtype=float)
-f_vec = f_vec * df;
+f_vec = f_vec * df
 f_vec = f_vec.reshape((f_vec.size,1))
 
-w_vec = 2 * np.pi * f_vec;
+w_vec = 2 * np.pi * f_vec
 
 t_vec = np.arange(0, T, dt, dtype=float)
 t_vec = t_vec.reshape((1,t_vec.size))

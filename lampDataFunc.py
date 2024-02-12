@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 
 def testDataSort(hostData, controlData):
     hostSort = np.zeros(hostData.shape)
@@ -11,4 +12,11 @@ def testDataSort(hostData, controlData):
         diff[:,k] = contSort[:,k] - hostSort[:,k]
 
     return hostSort, contSort, diff
+
+def freqDist(hostData, controlData):
+    hostSpect = sp.fft.fft(hostData[:,0])
+    contSpect = sp.fft.fft(controlData[:,0])
+    
+    return hostSpect, contSpect, 
+
 
