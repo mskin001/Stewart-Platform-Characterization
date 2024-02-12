@@ -4,8 +4,8 @@ from matplotlib import pyplot as plt
 import scipy as sp
 
 #%% Initialize parameters
-test_DOF = np.array([0, 1, 0, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
-save_file_name = "Prelim 002"
+test_DOF = np.array([0, 1, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
+save_file_name = "Prelim 007"
 save_test_files = True
 
 T = 180
@@ -136,9 +136,9 @@ axs[2].plot(t_vec.T,acc)
 axs[2].set_ylabel("Acc [m/s^2]")
 axs[2].grid(visible=1,which='major',axis='both')
 
-plt.figure()
-plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
-plt.xlim((0,10))
+# plt.figure()
+# plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
+# plt.xlim((0,10))
 
 plt.show()
 print("Program Complete")
