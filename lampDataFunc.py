@@ -10,13 +10,18 @@ def testDataSort(hostData, controlData):
         hostSort[:,k] = np.sort(hostData[:,k])
         contSort[:,k] = np.sort(controlData[:,k])
         diff[:,k] = contSort[:,k] - hostSort[:,k]
-
     return hostSort, contSort, diff
 
 def freqDist(hostData, controlData):
-    hostSpect = sp.fft.fft(hostData[:,0])
-    contSpect = sp.fft.fft(controlData[:,0])
-    
-    return hostSpect, contSpect, 
+    hostSpec = []
+    contSpec = []
+    for k in range(np.shape(hostData)[1]):
+        hostTemp = sp.fft.fft(hostData[:,0])
+        np.append(hostSpec,hostTemp,axis=0)
+        contTemp = sp.fft.fft(controlData[:,0])
+        np.append(contSpec,contTemp,axis=0)
+    print(np.shape(hostTemp))
+    print(np.shape(contTemp))
+    return hostSpec, contSpec
 
 

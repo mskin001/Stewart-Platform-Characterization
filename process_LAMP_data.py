@@ -8,7 +8,7 @@ import lampDataFunc
 file_name = "Prelim Test 001.csv"
 folder = "Characterization Data\Results"
 
-sr = 1000 # sample rate
+sr = 100 # sample rate
 
 plotResponse = True
 plotSorted = False
@@ -31,6 +31,7 @@ raw_data = np.loadtxt(full_file, dtype='float', delimiter=',', skiprows=1)
 time_col = header.index("H2C time (us)")
 raw_time = raw_data[:,time_col]
 exp_time = (raw_time - raw_time[0]) / 100
+
 h2c_start = header.index("H2C surge P")
 h2c_cols = np.sum(raw_data[:,h2c_start:h2c_start+18], axis=0).nonzero()
 h2c_cols = h2c_cols[0] + h2c_start
@@ -51,13 +52,13 @@ for k in range(num_cols):
 # %% -----------------------------------------------------------------------------------------
 h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
-host_spec, cont_spec = lampDataFunc.freqDist(h2c_data, c2h_data)
+host_spec, cont_spec = lampDataFunc.freqDist(h2c_data[0::3], c2h_data[0::3])
 N = len(host_spec)
 n = np.arange(N)
 T = N/sr
 freq = n/T
-print(freq.shape)
-print(host_spec.shape)
+print(np.shape(host_spec))
+print(np.shape(cont_spec))
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
@@ -97,8 +98,10 @@ if plotDirComp == True:
 
 if plotSpec == True:
     plt.figure()
-    plt.stem(freq, host_spec, "b",
-         markerfmt=" ", basefmt="-b")
+    for k in range(np.shape(host_spec)[1]):
+        plt.stem(freq,np.abs(host_spec[:,k]), "b", markerfmt=" ", basefmt="-b")
+        plt.stem(freq,np.abs(cont_spec[:,k]), "r", markerfmt=" ", basefmt="-b")
+    plt.xlim((0,7))
     #plt.stem(freq, np.abs(cont_spec))
 
 print("Program Complete")
