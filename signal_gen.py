@@ -138,17 +138,5 @@ print(lines)
 plt.legend(lines)
 plt.xlabel("Time")
 
-# axs[1].plot(t_vec.T,vel)
-# axs[1].set_ylabel("Vel [m/s]")
-# axs[1].grid(visible=1,which='major',axis='both')
-
-# axs[2].plot(t_vec.T,acc)
-# axs[2].set_ylabel("Acc [m/s^2]")
-# axs[2].grid(visible=1,which='major',axis='both')
-
-# plt.figure()
-# plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
-# plt.xlim((0,10))
-
 plt.show()
 print("Program Complete")
