@@ -1,3 +1,8 @@
+import numpy as np
+import itertools as itt
+from matplotlib import pyplot as plt
+import scipy as sp
+
 # This script was written to generate random multi-sine waves to characterize the
 # Large Amplitude Motion Platform (LAMP) at the National Renewable Energy Lab (NREL).
 # The LAMP is a 6 degree of freedom (DOF) Stewart platfrom designed for testing wave
@@ -38,11 +43,6 @@
 # test_acc        | (x,6) array | Test acceleration where each column is one DOF and
 #                 |             |  the length is the same as t_vec
 # ------------------------------------------------------------------------------
-
-import numpy as np
-import itertools as itt
-from matplotlib import pyplot as plt
-import scipy as sp
 
 #%% Initialize parameters
 test_DOF = np.array([0, 1, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
@@ -180,12 +180,13 @@ axs[0].grid(visible=1,which='major',axis='both')
 fig, axs = plt.subplots(3)
 lines = []
 print(ind)
+print(DOFs)
 for k in range(numDOF):
     axs[k].plot(t_vec.T,xt)
     axs[k].set_ylabel(units[k])
     axs[k].grid(visible=1,which='major',axis='both')
     print(ind[0][k])
-    np.append(lines,DOFs[ind[0][k]],axis=0)
+    np.append(lines,DOFs[ind[0]],axis=0)
 lines = DOFs[test_DOF!=0]
 print(lines)
 plt.legend(lines)
