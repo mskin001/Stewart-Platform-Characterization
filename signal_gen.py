@@ -143,7 +143,7 @@ N = len(host_spec)
 n = np.arange(N)
 T = N/100
 freq = n/T
-
+print(host_spec.shape)
 #%% Save multisine in .csv files
 if save_test_files:
     test_vals = np.zeros((np.size(xt,0),6))
@@ -165,10 +165,11 @@ if save_test_files:
     np.savetxt(acc_file,test_acc, delimiter=',')
     np.savetxt(time_file,t_vec.T, delimiter=',')
 
-
 #%% --------------------------------------------------------------------
 # Plot multisine signal
 # Modify the script below here to add new plots as desired.
+units = ["Pos/Rad", "Vel/RadVel", "Acc/RadAcc"]
+DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 fig, axs = plt.subplots(3)
 
 plt.xlabel("Time [s]")
@@ -176,17 +177,19 @@ axs[0].plot(t_vec.T,xt)
 axs[0].set_ylabel("Amplitude [m]")
 axs[0].grid(visible=1,which='major',axis='both')
 
-axs[1].plot(t_vec.T,vel)
-axs[1].set_ylabel("Vel [m/s]")
-axs[1].grid(visible=1,which='major',axis='both')
-
-axs[2].plot(t_vec.T,acc)
-axs[2].set_ylabel("Acc [m/s^2]")
-axs[2].grid(visible=1,which='major',axis='both')
-
-# plt.figure()
-# plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
-# plt.xlim((0,10))
+fig, axs = plt.subplots(3)
+lines = []
+print(ind)
+for k in range(numDOF):
+    axs[k].plot(t_vec.T,xt)
+    axs[k].set_ylabel(units[k])
+    axs[k].grid(visible=1,which='major',axis='both')
+    print(ind[0][k])
+    np.append(lines,DOFs[ind[0][k]],axis=0)
+lines = DOFs[test_DOF!=0]
+print(lines)
+plt.legend(lines)
+plt.xlabel("Time")
 
 plt.show()
 print("Program Complete")
