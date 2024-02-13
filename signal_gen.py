@@ -1,24 +1,69 @@
+# This script was written to generate random multi-sine waves to characterize the
+# Large Amplitude Motion Platform (LAMP) at the National Renewable Energy Lab (NREL).
+# The LAMP is a 6 degree of freedom (DOF) Stewart platfrom designed for testing wave
+# energy converters (WEC) in ocean wave like conditions. This program produces
+# random multi-sine waves to test the platform's performance in a wide varity of 
+# amplitudes and frequencies. It can also produce signals in any combination of DOFs
+# to test the coupled behavior. It produces a time varying test signal with randomly
+# varying amplitude approximatelycwithin the limits specified by peak_ampl and phase
+# randomely varying between -pi and pi.
+#
+# Inputs:
+# Variable name   | Data Type   | Description
+# test_DOF        | (1,6) array | Identify which DOF are desired for the test 0=do not 
+#                 |             |  include and 1=include. [1,0,0,0,0,0] will produce
+#                 |             |  one test signal in the surge direction
+# save_test_file  | string      | The desired file name for the save files. Files will
+#                 |             |  save in the same folder as this script
+# save_test_files | bool        | True=save files, False=do not save files
+# T               | int         | The desired test length in sections
+# dt              | int         | Temporal distance between test data points
+# f_range         | (1,2) array | Minimum and maximum desired frequencies
+# c               | int         | Frequency decay constant 1=white, 2=pink
+# peak_ampl       | int         | Approximate peak amplitude 
+# atten           | int         | Attenuation of the signal, artifically scale signal
+# numPhases       | int         | Number of phases in the signal, larger=more complex
+# reps            | int         | Number of times to repeate the signal in the test
+#                 |             |  case. reps>1 functionality not tested yet
+#
+# Outputs:
+# Variable Name   | Data Type   | Description
+# t_vec           | (x,1) array | Time vector array, will be saved into the time file
+#                 |             |  where x is determined by the length of the test
+#                 |             |  the time step dt
+# test_pos        | (x,6) array | Test positions where each column is one DOF and the
+#                 |             |  length is the same as t_vec
+# test_vel        | (x,6) array | Test velocity where each column is one DOF and the
+#                 |             |  length is the same as t_vec
+# test_acc        | (x,6) array | Test acceleration where each column is one DOF and
+#                 |             |  the length is the same as t_vec
+# ------------------------------------------------------------------------------
+
 import numpy as np
 import itertools as itt
 from matplotlib import pyplot as plt
 import scipy as sp
 
 #%% Initialize parameters
-test_DOF = np.array([1, 0, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
-save_file_name = "Prelim 007"
-save_test_files = False
+test_DOF = np.array([0, 1, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
+save_file_name = "Prelim 007" # Test file name
+save_test_files = False # True = save the signal files, Files = Do not save
 
-T = 180
-df = 1/T
-dt = 0.01
-f_range = [0.1, 6]
+T = 180 # Test length in seconds
+dt = 0.01 # 
+f_range = [0.1, 6] # Desired frequency range
 c = 2 # exponential factor controlling random noise decay, 1 = pink noise
 peak_ampl = 2 #approximate peak amplitude, subject to change based on randomness
-atten = 0.75
-numPhases = 100
-reps = 1
+atten = 0.75 # Attenuation, the amount to reduce the signal by (i.e. gain)
+numPhases = 100 # Number of phases to include in the multi-sine wave
+reps = 1 # Number of times to repeat the test (functionality not yet verified)
+
+# End of manual input section. It should not be necessary to modify code below
+# this point except for the plotting section at the bottom of the script. 
+# ------------------------------------------------------------------------------
 
 #%% Define frequency, omega, and time vectors
+df = 1/T
 numDOF = sum(test_DOF)
 
 f_min = np.round(f_range[0] / df)
@@ -120,9 +165,17 @@ if save_test_files:
     np.savetxt(acc_file,test_acc, delimiter=',')
     np.savetxt(time_file,t_vec.T, delimiter=',')
 
-#%% Plot multisine signal
+#%% --------------------------------------------------------------------
+# Plot multisine signal
+# Modify the script below here to add new plots as desired.
 units = ["Pos/Rad", "Vel/RadVel", "Acc/RadAcc"]
 DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
+fig, axs = plt.subplots(3)
+
+plt.xlabel("Time [s]")
+axs[0].plot(t_vec.T,xt)
+axs[0].set_ylabel("Amplitude [m]")
+axs[0].grid(visible=1,which='major',axis='both')
 
 fig, axs = plt.subplots(3)
 lines = []
