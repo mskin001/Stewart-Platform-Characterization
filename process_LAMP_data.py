@@ -50,6 +50,7 @@ for k in range(num_cols):
     c2h_data[:,k] = raw_data[:,c2h_cols[k]]
     if c2h_data[0,k] != 0:
         c2h_data[:,k] = c2h_data[:,k] - c2h_data[0,k]
+
 # %% -----------------------------------------------------------------------------------------
 h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
 

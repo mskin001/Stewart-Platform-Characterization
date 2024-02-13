@@ -42,10 +42,14 @@ import scipy as sp
 #                 |             |  length is the same as t_vec
 # test_acc        | (x,6) array | Test acceleration where each column is one DOF and
 #                 |             |  the length is the same as t_vec
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
+import numpy as np
+import itertools as itt
+from matplotlib import pyplot as plt
+import scipy as sp
 
 #%% Initialize parameters
-test_DOF = np.array([0, 1, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
+test_DOF = np.array([0, 0, 0, 1, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
 save_file_name = "Prelim 007" # Test file name
 save_test_files = False # True = save the signal files, Files = Do not save
 
@@ -53,8 +57,8 @@ T = 180 # Test length in seconds
 dt = 0.01 # 
 f_range = [0.1, 6] # Desired frequency range
 c = 2 # exponential factor controlling random noise decay, 1 = pink noise
-peak_ampl = 2 #approximate peak amplitude, subject to change based on randomness
-atten = 0.75 # Attenuation, the amount to reduce the signal by (i.e. gain)
+peak_ampl = 25 #approximate peak amplitude, subject to change based on randomness
+atten = 1 # Attenuation, the amount to reduce the signal by (i.e. gain)
 numPhases = 100 # Number of phases to include in the multi-sine wave
 reps = 1 # Number of times to repeat the test (functionality not yet verified)
 
@@ -143,7 +147,7 @@ N = len(host_spec)
 n = np.arange(N)
 T = N/100
 freq = n/T
-print(host_spec.shape)
+#print(host_spec.shape)
 #%% Save multisine in .csv files
 if save_test_files:
     test_vals = np.zeros((np.size(xt,0),6))
@@ -170,12 +174,6 @@ if save_test_files:
 # Modify the script below here to add new plots as desired.
 units = ["Pos/Rad", "Vel/RadVel", "Acc/RadAcc"]
 DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
-fig, axs = plt.subplots(3)
-
-plt.xlabel("Time [s]")
-axs[0].plot(t_vec.T,xt)
-axs[0].set_ylabel("Amplitude [m]")
-axs[0].grid(visible=1,which='major',axis='both')
 
 fig, axs = plt.subplots(3)
 lines = []
