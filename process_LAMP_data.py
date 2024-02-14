@@ -20,9 +20,6 @@ dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 2
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
 
 full_file = os.path.join(folder, file_name)
-print(" ")
-print(full_file)
-print(" ")
 with open(full_file, "r") as file:
     csvreader = csv.reader(file, delimiter=',')
     header = next(csvreader)
@@ -54,8 +51,6 @@ for k in range(num_cols):
 # %% -----------------------------------------------------------------------------------------
 h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
-print(np.shape(h2c_data[:,0::3]))
-print(np.shape(c2h_data[:,0::3]))
 host_spec, cont_spec = lampDataFunc.freqDist(h2c_data[:,0::3], c2h_data[:,0::3])
 N = len(host_spec)
 n = np.arange(N)
@@ -104,7 +99,6 @@ if plotSpec == True:
     plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
     plt.stem(freq,np.abs(cont_spec), "r", markerfmt=" ", basefmt="-b")
     plt.xlim((0,7))
-    #plt.stem(freq, np.abs(cont_spec))
 
 print("Program Complete")
 plt.show()
