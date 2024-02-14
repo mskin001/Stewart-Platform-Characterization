@@ -57,6 +57,10 @@ n = np.arange(N)
 T = N/sr
 freq = n/T
 
+diff_spec = np.arange()
+for k in range(len(h2c_data[:,0::3])):
+    pos_diff = h2c_data[:,k] - c2h_data[:,k]
+    diff_spec
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
