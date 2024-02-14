@@ -2,6 +2,7 @@ import os
 import csv
 from matplotlib import pyplot as plt
 import numpy as np
+import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
@@ -11,9 +12,9 @@ folder = "Characterization Data\Results"
 sr = 100 # sample rate
 
 plotResponse = True
-plotSorted = True
-plotDiff = True
-plotDirComp = True
+plotSorted = False
+plotDiff = False
+plotDirComp = False
 plotSpec = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23],
@@ -51,16 +52,20 @@ for k in range(num_cols):
 # %% -----------------------------------------------------------------------------------------
 h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
-host_spec, cont_spec = lampDataFunc.freqDist(h2c_data[:,0::3], c2h_data[:,0::3])
+h2cPos = h2c_data[:,0::3]
+c2hPos = c2h_data[:,0::3]
+host_spec, cont_spec = lampDataFunc.freqDist(h2cPos, c2hPos)
+h2cSpectra = sp.fft.fftn(h2cPos, axes=0)
+c2hSpectra = sp.fft.fftn(c2hPos, axes=0)
+print(h2cSpectra.shape)
+print(c2hSpectra.shape)
 N = len(host_spec)
 n = np.arange(N)
 T = N/sr
 freq = n/T
 
-diff_spec = np.arange()
-for k in range(len(h2c_data[:,0::3])):
-    pos_diff = h2c_data[:,k] - c2h_data[:,k]
-    diff_spec
+
+
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
