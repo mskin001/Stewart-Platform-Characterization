@@ -49,15 +49,15 @@ from matplotlib import pyplot as plt
 import scipy as sp
 
 #%% Initialize parameters
-test_DOF = np.array([0, 0, 0, 1, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
+test_DOF = np.array([1, 0, 0, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
 save_file_name = "Prelim 007" # Test file name
 save_test_files = False # True = save the signal files, Files = Do not save
 
-T = 180 # Test length in seconds
+T = 100 # Test length in seconds
 dt = 0.01 # 
 f_range = [0.1, 6] # Desired frequency range
 c = 2 # exponential factor controlling random noise decay, 1 = pink noise
-peak_ampl = 25 #approximate peak amplitude, subject to change based on randomness
+peak_ampl = 1 #approximate peak amplitude, subject to change based on randomness
 atten = 1 # Attenuation, the amount to reduce the signal by (i.e. gain)
 numPhases = 100 # Number of phases to include in the multi-sine wave
 reps = 1 # Number of times to repeat the test (functionality not yet verified)
@@ -147,19 +147,19 @@ N = len(host_spec)
 n = np.arange(N)
 T = N/100
 freq = n/T
-#print(host_spec.shape)
+
 #%% Save multisine in .csv files
+test_vals = np.zeros((np.size(xt,0),6))
+test_pos = test_vals
+test_vel = test_vals
+test_acc = test_vals
+ind = np.where(test_DOF!=0)
+for k in range(np.shape(xt)[1]):
+    test_pos[:,ind[0][k]] = xt[:,k]
+    test_vel[:,ind[0][k]] = vel[:,k]
+    test_acc[:,ind[0][k]] = acc[:,k]
+
 if save_test_files:
-    test_vals = np.zeros((np.size(xt,0),6))
-    test_pos = test_vals
-    test_vel = test_vals
-    test_acc = test_vals
-    ind = np.where(test_DOF!=0)
-    for k in range(np.size(xt,1)):
-        test_pos[:,ind[0][k]] = xt[:,k]
-        test_vel[:,ind[0][k]] = vel[:,k]
-        test_acc[:,ind[0][k]] = acc[:,k]
-    
     pos_file = save_file_name + " pos" + ".csv"
     vel_file = save_file_name + " vel" + ".csv"
     acc_file = save_file_name + " acc" + ".csv"
@@ -177,16 +177,21 @@ DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 fig, axs = plt.subplots(3)
 lines = []
-print(ind)
-print(DOFs)
-for k in range(numDOF):
-    axs[k].plot(t_vec.T,xt)
-    axs[k].set_ylabel(units[k])
-    axs[k].grid(visible=1,which='major',axis='both')
-    print(ind[0][k])
-    np.append(lines,DOFs[ind[0]],axis=0)
-lines = DOFs[test_DOF!=0]
-print(lines)
+ind = np.where(test_DOF!=0)
+for b in range(1):
+    axs[0].plot(t_vec.T,test_pos[:,b])
+    axs[0].plot(t_vec.T,xt[:,b])
+    axs[0].set_ylabel(units[b])
+    axs[0].grid(visible=1,which='major',axis='both')
+
+    axs[1].plot(t_vec.T,vel[:,b])
+    axs[1].set_ylabel(units[b])
+    axs[1].grid(visible=1,which='major',axis='both')
+
+    axs[2].plot(t_vec.T,acc[:,b])
+    axs[2].set_ylabel(units[b])
+    axs[2].grid(visible=1,which='major',axis='both')
+
 plt.legend(lines)
 plt.xlabel("Time")
 
