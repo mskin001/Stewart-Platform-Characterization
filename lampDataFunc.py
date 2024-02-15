@@ -34,7 +34,7 @@ def testDataSort(hostData, controlData):
         diff[:,k] = contSort[:,k] - hostSort[:,k]
     return hostSort, contSort, diff
 
-def freqDist(hostData, controlData):
+def freqDist(hostData, controlData, dt):
     # Computes the fft column wise on the host and controller data
     # and returns the frequency spectra.
     # Inputs:
@@ -50,11 +50,19 @@ def freqDist(hostData, controlData):
     # controlSpec = (MxN) array where M is the number of elements 
     #                in the spectra and N is the number of columns
     #                in hostData
-    hostSpec = []
-    contSpec = []
-    for k in range(np.shape(hostData)[1]):
-        hostSpec = sp.fft.fft(hostData[:,k])
-        contSpec = sp.fft.fft(controlData[:,k])
-    return hostSpec, contSpec
+    hostSpec = sp.fft.fftn(hostData, axes=0)
+    contSpec = sp.fft.fftn(controlData, axes=0)
+    diff = hostData - controlData
+    diffSpec = sp.fft.fftn(diff, axis=0)
+
+    hostFreq = np.zeros(np.shape(hostSpec))
+    contFreq = np.zeros(np.shape(contSpec))
+    diffFreq = np.zeros(np.shape(diffSpec))
+    for k in range(np.shape(hostSpec)[1]):
+        hostFreq[:,k] = sp.fft.fftfreq(hostSpec[:,k], d=dt)
+        contFreq[:,k] = sp.fft.fftfreq(contSpec[:,k], d=dt)
+        diffFreq[:,k] = sp.fft.fftfreq(diffSpec[:,k], d=dt)
+        
+    return hostSpec, hostFreq, contSpec, contFreq, diffSpec, diffFreq
 
 

@@ -12,10 +12,11 @@ folder = "Characterization Data\Results"
 sr = 100 # sample rate
 
 plotResponse = True
-plotSorted = False
-plotDiff = False
-plotDirComp = False
+plotSorted = True
+plotDiff = True
+plotDirComp = True
 plotSpec = True
+plotDiffSpec = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
@@ -50,22 +51,21 @@ for k in range(num_cols):
         c2h_data[:,k] = c2h_data[:,k] - c2h_data[0,k]
 
 # %% -----------------------------------------------------------------------------------------
-h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
+h2c_sort, c2h_sort, diff_sort = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
 h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
-host_spec, cont_spec = lampDataFunc.freqDist(h2cPos, c2hPos)
-h2cSpectra = sp.fft.fftn(h2cPos, axes=0)
-c2hSpectra = sp.fft.fftn(c2hPos, axes=0)
-print(h2cSpectra.shape)
-print(c2hSpectra.shape)
-N = len(host_spec)
+diff = (h2cPos - c2hPos)
+h2c_spec = sp.fft.fftn(h2cPos, axes=0)
+c2h_spec = sp.fft.fftn(c2hPos, axes=0)
+diff_spec = sp.fft.fftn(diff, axes=0)
+N = len(h2c_spec)
 n = np.arange(N)
 T = N/sr
 freq = n/T
 
-
-
+# dt = exp_time[1] - exp_time[0]
+# h2cSpec, h2cFreq, c2hSpec, c2hFreq, diffSpec, diffFreq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
@@ -93,7 +93,7 @@ if plotSorted == True:
 if plotDiff == True:
     fig, diffPlt = plt.subplots(3)
     for k in range(num_cols):
-        diffPlt[k].plot(h2c_sort[:,k],diff[:,k])
+        diffPlt[k].plot(h2c_sort[:,k],diff_sort[:,k])
         diffPlt[k].set_xlabel(units[k])
         diffPlt[k].set_ylabel("Residual")
         diffPlt[k].grid(visible=1,which="major",axis="both")
@@ -105,9 +105,13 @@ if plotDirComp == True:
 
 if plotSpec == True:
     plt.figure()
-    plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
-    plt.stem(freq,np.abs(cont_spec), "r", markerfmt=" ", basefmt="-b")
-    plt.xlim((0,7))
+    plt.stem(freq,np.abs(h2c_spec), "b", markerfmt=" ", basefmt=" ")
+    plt.stem(freq,np.abs(c2h_spec), "r", markerfmt=" ", basefmt=" ")
+    plt.xlim((0,6))
+
+# if plotDiffSpec == True:
+#     plt.figure()
+#     plt.plot(h2cFreq,h2cSpec)
 
 print("Program Complete")
 plt.show()
