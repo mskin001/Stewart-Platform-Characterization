@@ -12,9 +12,9 @@ folder = "Characterization Data\Results"
 sr = 100 # sample rate
 
 plotResponse = True
-plotSorted = True
-plotDiff = True
-plotDirComp = True
+plotSorted = False
+plotDiff = False
+plotDirComp = False
 plotSpec = True
 plotDiffSpec = True
 # %% -----------------------------------------------------------------------------------------
@@ -55,17 +55,17 @@ h2c_sort, c2h_sort, diff_sort = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
 h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
-diff = (h2cPos - c2hPos)
-h2c_spec = sp.fft.fftn(h2cPos, axes=0)
-c2h_spec = sp.fft.fftn(c2hPos, axes=0)
-diff_spec = sp.fft.fftn(diff, axes=0)
-N = len(h2c_spec)
-n = np.arange(N)
-T = N/sr
-freq = n/T
+# diff = (h2cPos - c2hPos)
+# h2c_spec = sp.fft.fftn(h2cPos, axes=0)
+# c2h_spec = sp.fft.fftn(c2hPos, axes=0)
+# diff_spec = sp.fft.fftn(diff, axes=0)
+# N = len(h2c_spec)
+# n = np.arange(N)
+# T = N/sr
+# freq = n/T
 
 dt = exp_time[1] - exp_time[0]
-h2cSpec, h2cFreq, c2hSpec, c2hFreq, diffSpec, diffFreq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
+h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
@@ -105,13 +105,14 @@ if plotDirComp == True:
 
 if plotSpec == True:
     plt.figure()
-    plt.stem(freq,np.abs(h2c_spec), "b", markerfmt=" ", basefmt=" ")
-    plt.stem(freq,np.abs(c2h_spec), "r", markerfmt=" ", basefmt=" ")
+    plt.stem(freq*100,np.abs(h2cSpec), "b", markerfmt=" ", basefmt=" ")
+    plt.stem(freq*100,np.abs(c2hSpec), "r", markerfmt=" ", basefmt=" ")
     plt.xlim((0,6))
 
-# if plotDiffSpec == True:
-#     plt.figure()
-#     plt.plot(h2cFreq,h2cSpec)
+if plotDiffSpec == True:
+    plt.figure()
+    plt.stem(freq*100,np.abs(diffSpec), markerfmt=" ", basefmt=" ")
+    plt.xlim(0,6)
 
 print("Program Complete")
 plt.show()

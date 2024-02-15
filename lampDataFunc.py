@@ -43,26 +43,25 @@ def freqDist(hostData, controlData, dt):
     # controlData = (MxN) array where M is the length of the test
     #                 and N is the 3x the number of DOFs in the 
     #                 test
+    # dt = int, the time step between data points
     # Outputs:
     # hostSpec = (MxN) array where M is the number of elements in
     #             the spectra and N is the number of columns in 
     #             hostData
     # controlSpec = (MxN) array where M is the number of elements 
     #                in the spectra and N is the number of columns
+    #                in controlData
+    # diffSpec = (MxN) array where M is the number of elements 
+    #                in the spectra and N is the number of columns
     #                in hostData
+    # freq = (1xM) array containing the sample frequencies
     hostSpec = sp.fft.fftn(hostData, axes=0)
     contSpec = sp.fft.fftn(controlData, axes=0)
     diff = hostData - controlData
     diffSpec = sp.fft.fftn(diff, axes=0)
 
-    hostFreq = np.zeros(np.shape(hostSpec))
-    contFreq = np.zeros(np.shape(contSpec))
-    diffFreq = np.zeros(np.shape(diffSpec))
-    for k in range(np.shape(hostSpec)[1]):
-        hostFreq[:,k] = sp.fft.fftfreq(hostSpec[:,k], d=dt)
-        contFreq[:,k] = sp.fft.fftfreq(contSpec[:,k], d=dt)
-        diffFreq[:,k] = sp.fft.fftfreq(diffSpec[:,k], d=dt)
+    freq = sp.fft.fftfreq(np.size(hostSpec[:,0]))
         
-    return hostSpec, hostFreq, contSpec, contFreq, diffSpec, diffFreq
+    return hostSpec, contSpec, diffSpec, freq
 
 
