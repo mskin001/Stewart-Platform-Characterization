@@ -64,8 +64,8 @@ n = np.arange(N)
 T = N/sr
 freq = n/T
 
-# dt = exp_time[1] - exp_time[0]
-# h2cSpec, h2cFreq, c2hSpec, c2hFreq, diffSpec, diffFreq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
+dt = exp_time[1] - exp_time[0]
+h2cSpec, h2cFreq, c2hSpec, c2hFreq, diffSpec, diffFreq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]

@@ -53,7 +53,7 @@ def freqDist(hostData, controlData, dt):
     hostSpec = sp.fft.fftn(hostData, axes=0)
     contSpec = sp.fft.fftn(controlData, axes=0)
     diff = hostData - controlData
-    diffSpec = sp.fft.fftn(diff, axis=0)
+    diffSpec = sp.fft.fftn(diff, axes=0)
 
     hostFreq = np.zeros(np.shape(hostSpec))
     contFreq = np.zeros(np.shape(contSpec))
