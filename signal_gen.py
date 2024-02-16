@@ -55,7 +55,7 @@ save_test_files = False # True = save the signal files, Files = Do not save
 
 T = 100 # Test length in seconds
 dt = 0.01 # 
-f_range = [0.1, 6] # Desired frequency range
+f_range = [0.1, 1] # Desired frequency range
 c = 2 # exponential factor controlling random noise decay, 1 = pink noise
 peak_ampl = 1 #approximate peak amplitude, subject to change based on randomness
 atten = 1 # Attenuation, the amount to reduce the signal by (i.e. gain)
@@ -149,11 +149,11 @@ T = N/100
 freq = n/T
 
 #%% Save multisine in .csv files
-test_vals = np.zeros((np.size(xt,0),6))
-test_pos = test_vals
-test_vel = test_vals
-test_acc = test_vals
+test_pos = np.zeros((np.size(xt,0),6))
+test_vel = np.zeros((np.size(xt,0),6))
+test_acc = np.zeros((np.size(xt,0),6))
 ind = np.where(test_DOF!=0)
+
 for k in range(np.shape(xt)[1]):
     test_pos[:,ind[0][k]] = xt[:,k]
     test_vel[:,ind[0][k]] = vel[:,k]
@@ -176,23 +176,22 @@ units = ["Pos/Rad", "Vel/RadVel", "Acc/RadAcc"]
 DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 fig, axs = plt.subplots(3)
-lines = []
-ind = np.where(test_DOF!=0)
-for b in range(1):
-    axs[0].plot(t_vec.T,test_pos[:,b])
-    axs[0].plot(t_vec.T,xt[:,b])
-    axs[0].set_ylabel(units[b])
+idx = np.where(test_DOF!=0)
+print(idx[0])
+print(DOFs[ind[0]])
+#lines = [DOFs[np.where(test_DOF!=0)[0,:]]]
+for k in range(numDOF):
+    axs[0].plot(t_vec.T,xt)
+    axs[0].set_ylabel(units[0])
     axs[0].grid(visible=1,which='major',axis='both')
-
-    axs[1].plot(t_vec.T,vel[:,b])
-    axs[1].set_ylabel(units[b])
+    axs[1].plot(t_vec.T,vel[:,k])
+    axs[1].set_ylabel(units[1])
     axs[1].grid(visible=1,which='major',axis='both')
-
-    axs[2].plot(t_vec.T,acc[:,b])
-    axs[2].set_ylabel(units[b])
+    axs[2].plot(t_vec.T,acc[:,k])
+    axs[2].set_ylabel(units[2])
     axs[2].grid(visible=1,which='major',axis='both')
 
-plt.legend(lines)
+#plt.legend(lines)
 plt.xlabel("Time")
 
 plt.show()
