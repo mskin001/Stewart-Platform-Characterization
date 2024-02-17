@@ -6,8 +6,10 @@ import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "Prelim Test 001.csv"
-folder = "Characterization Data\Results"
+file_name = "RW_Second_Test_UDP.csv"
+emfolder = "Characterization Data\Emulator Results"
+tpfolder = "Characterization Data\Test Profiles"
+rwfolder = "Characterization Data\Real World Results"
 
 sr = 100 # sample rate
 
@@ -21,7 +23,7 @@ plotDiffSpec = True
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
 
-full_file = os.path.join(folder, file_name)
+full_file = os.path.join(rwfolder, file_name)
 with open(full_file, "r") as file:
     csvreader = csv.reader(file, delimiter=',')
     header = next(csvreader)

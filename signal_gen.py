@@ -49,15 +49,15 @@ from matplotlib import pyplot as plt
 import scipy as sp
 
 #%% Initialize parameters
-test_DOF = np.array([1, 0, 0, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
-save_file_name = "Prelim 007" # Test file name
-save_test_files = False # True = save the signal files, Files = Do not save
+test_DOF = np.array([1, 1, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
+save_file_name = "TP008_005-2_1" # Test file name
+save_test_files = True # True = save the signal files, Files = Do not save
 
-T = 100 # Test length in seconds
-dt = 0.01 # 
-f_range = [0.1, 1] # Desired frequency range
+T = 180 # Test length in seconds
+dt = 0.01 
+f_range = [0.05, 2] # Desired frequency range
 c = 2 # exponential factor controlling random noise decay, 1 = pink noise
-peak_ampl = 1 #approximate peak amplitude, subject to change based on randomness
+peak_ampl = 0.85 #approximate peak amplitude, subject to change based on randomness
 atten = 1 # Attenuation, the amount to reduce the signal by (i.e. gain)
 numPhases = 100 # Number of phases to include in the multi-sine wave
 reps = 1 # Number of times to repeat the test (functionality not yet verified)
@@ -174,14 +174,11 @@ if save_test_files:
 # Modify the script below here to add new plots as desired.
 units = ["Pos/Rad", "Vel/RadVel", "Acc/RadAcc"]
 DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
-
+idx = np.nonzero(test_DOF)
+lines = []
 fig, axs = plt.subplots(3)
-idx = np.where(test_DOF!=0)
-print(idx[0])
-print(DOFs[ind[0]])
-#lines = [DOFs[np.where(test_DOF!=0)[0,:]]]
 for k in range(numDOF):
-    axs[0].plot(t_vec.T,xt)
+    axs[0].plot(t_vec.T,xt[:,k])
     axs[0].set_ylabel(units[0])
     axs[0].grid(visible=1,which='major',axis='both')
     axs[1].plot(t_vec.T,vel[:,k])
@@ -190,8 +187,8 @@ for k in range(numDOF):
     axs[2].plot(t_vec.T,acc[:,k])
     axs[2].set_ylabel(units[2])
     axs[2].grid(visible=1,which='major',axis='both')
-
-#plt.legend(lines)
+    lines = np.append(lines, DOFs[ind[0][k]])
+axs[0].legend(lines, loc="upper right")
 plt.xlabel("Time")
 
 plt.show()
