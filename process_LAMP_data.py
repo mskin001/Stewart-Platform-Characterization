@@ -65,13 +65,16 @@ units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]",
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
 
 if plotResponse == True:
-    fig, axs = plt.subplots(3)
-    for b in range(num_cols/3):
+    iter = 0
+    for b in range(int(num_cols/3)):
+        fig, axs = plt.subplots(3)
         for k in range(3):
-            axs[k].plot(exp_time,h2c_data[:,k], label="Commanded")
-            axs[k].plot(exp_time,c2h_data[:,k], label="Result")
+            col = k + iter
+            axs[k].plot(exp_time,h2c_data[:,col], label="Commanded")
+            axs[k].plot(exp_time,c2h_data[:,col], label="Result")
             axs[k].set_ylabel(units[k])
             axs[k].grid(visible=1,which='major',axis='both')
+        iter = iter + 3
     axs[0].legend()
     plt.xlabel("Time [s]")
 
