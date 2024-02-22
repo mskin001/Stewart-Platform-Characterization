@@ -43,10 +43,6 @@ import scipy as sp
 # test_acc        | (x,6) array | Test acceleration where each column is one DOF and
 #                 |             |  the length is the same as t_vec
 # ----------------------------------------------------------------------------------
-import numpy as np
-import itertools as itt
-from matplotlib import pyplot as plt
-import scipy as sp
 
 #%% Initialize parameters
 test_DOF = np.array([1, 1, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
