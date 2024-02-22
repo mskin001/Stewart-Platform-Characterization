@@ -6,24 +6,34 @@ import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "RW_Second_Test_UDP.csv"
+#file_name = "RW_Second_Test_UDP.csv"
+file_name = "EM001_010-6_2.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
 
 sr = 100 # sample rate
+dt = 0.01
+DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
-plotResponse = True
+plotResponse = False
 plotSorted = False
 plotDiff = False
 plotDirComp = False
 plotSpec = True
-plotDiffSpec = True
+plotDiffSpec = False
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
 
-full_file = os.path.join(rwfolder, file_name)
+if file_name[0:2] == "EM":
+    folder = emfolder
+elif file_name[0:2] == "RW":
+    folder = rwfolder
+else:
+    folder = tpfolder
+
+full_file = os.path.join(folder, file_name)
 with open(full_file, "r") as file:
     csvreader = csv.reader(file, delimiter=',')
     header = next(csvreader)
@@ -57,8 +67,6 @@ h2c_sort, c2h_sort, diff_sort = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
 h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
-
-dt = exp_time[1] - exp_time[0]
 h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
@@ -75,17 +83,23 @@ if plotResponse == True:
             axs[k].set_ylabel(units[k])
             axs[k].grid(visible=1,which='major',axis='both')
         iter = iter + 3
-    axs[0].legend()
+        axs[0].set_title(DOF[b])
+        axs[0].legend()
     plt.xlabel("Time [s]")
 
 if plotSorted == True:
-    fig, sortplt = plt.subplots(3)
-    for k in range(num_cols):
-        sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,k], label="Commanded")
-        sortplt[k].plot(np.arange(0,num_rows,1),c2h_sort[:,k], label="Result")
-        sortplt[k].set_ylabel(units[k])
-        sortplt[k].grid(visible=1,which="major",axis="both")
-    sortplt[0].legend()
+    iter = 0
+    for b in range(int(num_cols/3)):
+        fig, sortplt = plt.subplots(3)
+        for k in range(3):
+            col = k + iter
+            sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,col], label="Commanded")
+            sortplt[k].plot(np.arange(0,num_rows,1),c2h_sort[:,col], label="Result")
+            sortplt[k].set_ylabel(units[k])
+            sortplt[k].grid(visible=1,which="major",axis="both")
+        iter = iter + 3
+        sortplt[0].set_title(DOF[b])
+        sortplt[0].legend()
     plt.xlabel("Index")
 
 if plotDiff == True:
@@ -102,14 +116,16 @@ if plotDirComp == True:
     plt.legend(["Pos [m]", "Vel [m/s]", "Acc [m/s^2]"])
 
 if plotSpec == True:
-    plt.figure()
-    plt.stem(freq*100,np.abs(h2cSpec), "b", markerfmt=" ", basefmt=" ")
-    plt.stem(freq*100,np.abs(c2hSpec), "r", markerfmt=" ", basefmt=" ")
-    plt.xlim((0,6))
+    for k in range(np.shape(h2cSpec)[1]):
+        plt.figure()
+        plt.stem(freq,np.abs(h2cSpec[:,k]), "b", markerfmt=" ", basefmt=" ")
+        plt.stem(freq,np.abs(c2hSpec[:,k]), "r", markerfmt=" ", basefmt=" ")
+        plt.title(DOF[k])
+        plt.xlim((0,6))
 
 if plotDiffSpec == True:
     plt.figure()
-    plt.stem(freq*100,np.abs(diffSpec), markerfmt=" ", basefmt=" ")
+    plt.stem(freq,np.abs(diffSpec), markerfmt=" ", basefmt=" ")
     plt.xlim(0,6)
 
 print("Program Complete")
