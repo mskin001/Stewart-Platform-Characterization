@@ -52,7 +52,7 @@ save_test_files = False # True = save the signal files, Files = Do not save
 T = 180 # Test length in seconds
 dt = 0.01 
 f_range = [0.05, 2] # Desired frequency range
-c = 2 # exponential factor controlling random noise decay, 1 = pink noise
+c = 1.25 # exponential factor controlling random noise decay, 1 = pink noise
 peak_ampl = 0.85 #approximate peak amplitude, subject to change based on randomness
 atten = 1 # Attenuation, the amount to reduce the signal by (i.e. gain)
 numPhases = 100 # Number of phases to include in the multi-sine wave
@@ -138,7 +138,7 @@ vel = np.gradient(xt,dt, axis=0)
 acc = np.gradient(vel,dt, axis=0)
 
 #%% Find frequency spectrum
-host_spec = sp.fft.fft(xf)
+host_spec = sp.fft.fft(xt[:,0])
 N = len(host_spec)
 n = np.arange(N)
 T = N/100
@@ -187,5 +187,8 @@ for k in range(numDOF):
 axs[0].legend(lines, loc="upper right")
 plt.xlabel("Time")
 
+plt.figure()
+plt.stem(freq,np.abs(host_spec), basefmt=" ", markerfmt=" ")
+plt.xlim(0,f_range[1])
 plt.show()
 print("Program Complete")
