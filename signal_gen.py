@@ -51,7 +51,7 @@ import scipy as sp
 #%% Initialize parameters
 test_DOF = np.array([1, 1, 1, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
 save_file_name = "TP008_005-2_1" # Test file name
-save_test_files = True # True = save the signal files, Files = Do not save
+save_test_files = False # True = save the signal files, Files = Do not save
 
 T = 180 # Test length in seconds
 dt = 0.01 

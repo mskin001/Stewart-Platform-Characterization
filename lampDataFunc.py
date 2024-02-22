@@ -27,8 +27,7 @@ def testDataSort(hostData, controlData):
     hostSort = np.zeros(hostData.shape)
     contSort = np.zeros(controlData.shape)
     diff = np.zeros(hostData.shape)
-    numCols = np.shape(hostData)[1]
-    for k in range(numCols):
+    for k in range(np.shape(hostData)[1]):
         hostSort[:,k] = np.sort(hostData[:,k])
         contSort[:,k] = np.sort(controlData[:,k])
         diff[:,k] = contSort[:,k] - hostSort[:,k]
@@ -55,12 +54,13 @@ def freqDist(hostData, controlData, dt):
     #                in the spectra and N is the number of columns
     #                in hostData
     # freq = (1xM) array containing the sample frequencies
+    diff = np.zeros(hostData.shape)
+    for k in range(np.shape(hostData)[1]):
+        diff[:,k] = hostData[:,k] - controlData[:,k]
     hostSpec = sp.fft.fftn(hostData, axes=0)
     contSpec = sp.fft.fftn(controlData, axes=0)
-    diff = hostData - controlData
     diffSpec = sp.fft.fftn(diff, axes=0)
-
-    freq = sp.fft.fftfreq(np.size(hostSpec[:,0]))
+    freq = sp.fft.fftfreq(np.size(hostSpec[:,0]), d=dt)
         
     return hostSpec, contSpec, diffSpec, freq
 

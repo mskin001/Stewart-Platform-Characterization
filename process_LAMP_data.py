@@ -20,7 +20,7 @@ plotDirComp = False
 plotSpec = True
 plotDiffSpec = True
 # %% -----------------------------------------------------------------------------------------
-dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23],
+dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
 
 full_file = os.path.join(rwfolder, file_name)
@@ -57,14 +57,6 @@ h2c_sort, c2h_sort, diff_sort = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
 h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
-# diff = (h2cPos - c2hPos)
-# h2c_spec = sp.fft.fftn(h2cPos, axes=0)
-# c2h_spec = sp.fft.fftn(c2hPos, axes=0)
-# diff_spec = sp.fft.fftn(diff, axes=0)
-# N = len(h2c_spec)
-# n = np.arange(N)
-# T = N/sr
-# freq = n/T
 
 dt = exp_time[1] - exp_time[0]
 h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
@@ -74,11 +66,12 @@ units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]",
 
 if plotResponse == True:
     fig, axs = plt.subplots(3)
-    for k in range(num_cols):
-        axs[k].plot(exp_time,h2c_data[:,k], label="Commanded")
-        axs[k].plot(exp_time,c2h_data[:,k], label="Result")
-        axs[k].set_ylabel(units[k])
-        axs[k].grid(visible=1,which='major',axis='both')
+    for b in range(num_cols/3):
+        for k in range(3):
+            axs[k].plot(exp_time,h2c_data[:,k], label="Commanded")
+            axs[k].plot(exp_time,c2h_data[:,k], label="Result")
+            axs[k].set_ylabel(units[k])
+            axs[k].grid(visible=1,which='major',axis='both')
     axs[0].legend()
     plt.xlabel("Time [s]")
 
