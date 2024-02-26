@@ -45,11 +45,11 @@ import scipy as sp
 # ----------------------------------------------------------------------------------
 
 #%% Initialize parameters
-test_DOF = np.array([0, 1, 0, 1, 1, 1]) #[surge, sway, heave, roll, pitch, yaw]
+test_DOF = np.array([0, 1, 0, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
 save_file_name = "TP008_005-2_1" # Test file name
 save_test_files = False # True = save the signal files, Files = Do not save
 
-T = 180 # Test length in seconds
+T = 200 # Test length in seconds
 dt = 0.01 
 f_range = [0.05, 2] # Desired frequency range
 c = 1.25 # exponential factor controlling random noise decay, 1 = pink noise
