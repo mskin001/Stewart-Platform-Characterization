@@ -27,14 +27,13 @@ def testDataSort(hostData, controlData):
     hostSort = np.zeros(hostData.shape)
     contSort = np.zeros(controlData.shape)
     diff = np.zeros(hostData.shape)
-    numCols = np.shape(hostData)[1]
-    for k in range(numCols):
+    for k in range(np.shape(hostData)[1]):
         hostSort[:,k] = np.sort(hostData[:,k])
         contSort[:,k] = np.sort(controlData[:,k])
         diff[:,k] = contSort[:,k] - hostSort[:,k]
     return hostSort, contSort, diff
 
-def freqDist(hostData, controlData):
+def freqDist(hostData, controlData, dt):
     # Computes the fft column wise on the host and controller data
     # and returns the frequency spectra.
     # Inputs:
@@ -43,18 +42,26 @@ def freqDist(hostData, controlData):
     # controlData = (MxN) array where M is the length of the test
     #                 and N is the 3x the number of DOFs in the 
     #                 test
+    # dt = int, the time step between data points
     # Outputs:
     # hostSpec = (MxN) array where M is the number of elements in
     #             the spectra and N is the number of columns in 
     #             hostData
     # controlSpec = (MxN) array where M is the number of elements 
     #                in the spectra and N is the number of columns
+    #                in controlData
+    # diffSpec = (MxN) array where M is the number of elements 
+    #                in the spectra and N is the number of columns
     #                in hostData
-    hostSpec = []
-    contSpec = []
+    # freq = (1xM) array containing the sample frequencies
+    diff = np.zeros(hostData.shape)
     for k in range(np.shape(hostData)[1]):
-        hostSpec = sp.fft.fft(hostData[:,k])
-        contSpec = sp.fft.fft(controlData[:,k])
-    return hostSpec, contSpec
+        diff[:,k] = hostData[:,k] - controlData[:,k]
+    hostSpec = sp.fft.fftn(hostData, axes=0)
+    contSpec = sp.fft.fftn(controlData, axes=0)
+    diffSpec = sp.fft.fftn(diff, axes=0)
+    freq = sp.fft.fftfreq(np.size(hostSpec[:,0]), d=dt)
+        
+    return hostSpec, contSpec, diffSpec, freq
 
 

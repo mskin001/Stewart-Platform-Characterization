@@ -2,27 +2,39 @@ import os
 import csv
 from matplotlib import pyplot as plt
 import numpy as np
+import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "Prelim Test 001.csv"
-folder = "Characterization Data\Results"
+file_name = "RW_Second_Test_UDP.csv"
+#file_name = "EM001_010-6_2.csv"
+emfolder = "Characterization Data\Emulator Results"
+tpfolder = "Characterization Data\Test Profiles"
+rwfolder = "Characterization Data\Real World Results"
 
 sr = 100 # sample rate
+dt = 0.01
+DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 plotResponse = True
-plotSorted = True
 plotDiff = True
-plotDirComp = True
+plotSorted = False
+plotSortedDiff = False
+plotDirComp = False
 plotSpec = True
+plotDiffSpec = False
 # %% -----------------------------------------------------------------------------------------
-dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23],
+dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
 
+if file_name[0:2] == "EM":
+    folder = emfolder
+elif file_name[0:2] == "RW":
+    folder = rwfolder
+else:
+    folder = tpfolder
+
 full_file = os.path.join(folder, file_name)
-print(" ")
-print(full_file)
-print(" ")
 with open(full_file, "r") as file:
     csvreader = csv.reader(file, delimiter=',')
     header = next(csvreader)
@@ -52,47 +64,69 @@ for k in range(num_cols):
         c2h_data[:,k] = c2h_data[:,k] - c2h_data[0,k]
 
 # %% -----------------------------------------------------------------------------------------
-h2c_sort, c2h_sort, diff = lampDataFunc.testDataSort(h2c_data, c2h_data)
+diff = np.zeros(h2c_data.shape)
+for k in range(num_cols):
+    diff[:,k] = (h2c_data[:,k] - c2h_data[:,k])
 
-print(np.shape(h2c_data[:,0::3]))
-print(np.shape(c2h_data[:,0::3]))
-host_spec, cont_spec = lampDataFunc.freqDist(h2c_data[:,0::3], c2h_data[:,0::3])
-N = len(host_spec)
-n = np.arange(N)
-T = N/sr
-freq = n/T
+h2c_sort, c2h_sort, diff_sort = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
+h2cPos = h2c_data[:,0::3]
+c2hPos = c2h_data[:,0::3]
+h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
          "Angle [rad]", "AngVel [rad/s]", "AngAcc [rad/s^2]"]
 
 if plotResponse == True:
-    fig, axs = plt.subplots(3)
-    for k in range(num_cols):
-        axs[k].plot(exp_time,h2c_data[:,k], label="Commanded")
-        axs[k].plot(exp_time,c2h_data[:,k], label="Result")
-        axs[k].set_ylabel(units[k])
-        axs[k].grid(visible=1,which='major',axis='both')
-    axs[0].legend()
+    iter = 0
+    for b in range(int(num_cols/3)):
+        fig, axs = plt.subplots(3)
+        for k in range(3):
+            col = k + iter
+            axs[k].plot(exp_time,h2c_data[:,col], label="Commanded")
+            axs[k].plot(exp_time,c2h_data[:,col], label="Result")
+            axs[k].set_ylabel(units[k])
+            axs[k].grid(visible=1,which='major',axis='both')
+        iter = iter + 3
+        axs[0].set_title(DOF[b])
+        axs[0].legend()
+    plt.xlabel("Time [s]")
+
+if plotDiff == True:
+    iter = 0
+    for b in range(int(num_cols/3)):
+        fig, diffPlt = plt.subplots(3)
+        for k in range(3):
+            col = k + iter
+            diffPlt[k].plot(exp_time,diff[:,col], label="Commanded")
+            diffPlt[k].set_ylabel(units[k])
+            diffPlt[k].grid(visible=1,which='major',axis='both')
+        iter = iter + 3
+        axs[0].set_title(DOF[b])
     plt.xlabel("Time [s]")
 
 if plotSorted == True:
-    fig, sortplt = plt.subplots(3)
-    for k in range(num_cols):
-        sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,k], label="Commanded")
-        sortplt[k].plot(np.arange(0,num_rows,1),c2h_sort[:,k], label="Result")
-        sortplt[k].set_ylabel(units[k])
-        sortplt[k].grid(visible=1,which="major",axis="both")
-    sortplt[0].legend()
+    iter = 0
+    for b in range(int(num_cols/3)):
+        fig, sortplt = plt.subplots(3)
+        for k in range(3):
+            col = k + iter
+            sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,col], label="Commanded")
+            sortplt[k].plot(np.arange(0,num_rows,1),c2h_sort[:,col], label="Result")
+            sortplt[k].set_ylabel(units[k])
+            sortplt[k].grid(visible=1,which="major",axis="both")
+        iter = iter + 3
+        sortplt[0].set_title(DOF[b])
+        sortplt[0].legend()
     plt.xlabel("Index")
 
-if plotDiff == True:
-    fig, diffPlt = plt.subplots(3)
+if plotSortedDiff == True:
+    fig, sortDiff = plt.subplots(3)
     for k in range(num_cols):
-        diffPlt[k].plot(h2c_sort[:,k],diff[:,k])
-        diffPlt[k].set_xlabel(units[k])
-        diffPlt[k].set_ylabel("Residual")
-        diffPlt[k].grid(visible=1,which="major",axis="both")
+        sortDiff[k].plot(h2c_sort[:,k],diff_sort[:,k])
+        sortDiff[k].set_xlabel(units[k])
+        sortDiff[k].set_ylabel("Residual")
+        sortDiff[k].grid(visible=1,which="major",axis="both")
     
 if plotDirComp == True:
     plt.figure()
@@ -100,11 +134,17 @@ if plotDirComp == True:
     plt.legend(["Pos [m]", "Vel [m/s]", "Acc [m/s^2]"])
 
 if plotSpec == True:
+    for k in range(np.shape(h2cSpec)[1]):
+        plt.figure()
+        plt.stem(freq,np.abs(h2cSpec[:,k]), "b", markerfmt=" ", basefmt=" ")
+        plt.stem(freq,np.abs(c2hSpec[:,k]), "r", markerfmt=" ", basefmt=" ")
+        plt.title(DOF[k])
+        plt.xlim((0,6))
+
+if plotDiffSpec == True:
     plt.figure()
-    plt.stem(freq,np.abs(host_spec), "b", markerfmt=" ", basefmt="-b")
-    plt.stem(freq,np.abs(cont_spec), "r", markerfmt=" ", basefmt="-b")
-    plt.xlim((0,7))
-    #plt.stem(freq, np.abs(cont_spec))
+    plt.stem(freq,np.abs(diffSpec), markerfmt=" ", basefmt=" ")
+    plt.xlim(0,6)
 
 print("Program Complete")
 plt.show()

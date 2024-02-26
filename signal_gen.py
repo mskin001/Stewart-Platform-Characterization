@@ -26,7 +26,7 @@ import scipy as sp
 # f_range         | (1,2) array | Minimum and maximum desired frequencies
 # c               | int         | Frequency decay constant 1=white, 2=pink
 # peak_ampl       | int         | Approximate peak amplitude 
-# atten           | int         | Attenuation of the signal, artifically scale signal
+# scale factor    | (1x6 array  | Scaling factor of the signal
 # numPhases       | int         | Number of phases in the signal, larger=more complex
 # reps            | int         | Number of times to repeate the signal in the test
 #                 |             |  case. reps>1 functionality not tested yet
@@ -43,22 +43,19 @@ import scipy as sp
 # test_acc        | (x,6) array | Test acceleration where each column is one DOF and
 #                 |             |  the length is the same as t_vec
 # ----------------------------------------------------------------------------------
-import numpy as np
-import itertools as itt
-from matplotlib import pyplot as plt
-import scipy as sp
 
 #%% Initialize parameters
-test_DOF = np.array([0, 0, 0, 1, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
-save_file_name = "Prelim 007" # Test file name
+test_DOF = np.array([0, 1, 0, 1, 1, 1]) #[surge, sway, heave, roll, pitch, yaw]
+save_file_name = "TP008_005-2_1" # Test file name
 save_test_files = False # True = save the signal files, Files = Do not save
 
 T = 180 # Test length in seconds
-dt = 0.01 # 
-f_range = [0.1, 6] # Desired frequency range
-c = 2 # exponential factor controlling random noise decay, 1 = pink noise
-peak_ampl = 25 #approximate peak amplitude, subject to change based on randomness
-atten = 1 # Attenuation, the amount to reduce the signal by (i.e. gain)
+dt = 0.01 
+f_range = [0.05, 2] # Desired frequency range
+c = 1.25 # exponential factor controlling random noise decay, 1 = pink noise
+peak_ampl = 0.65 #approximate peak amplitude, subject to change based on randomness
+# Scale factor, the amount to reduce the signal by (i.e. gain)
+sf = [1, 1, 1, 15, 15, 15] #[m, m, m, deg, deg, deg]
 numPhases = 100 # Number of phases to include in the multi-sine wave
 reps = 1 # Number of times to repeat the test (functionality not yet verified)
 
@@ -96,7 +93,7 @@ Amp = np.ones((np.size(f_vec),1)) / f_vec**c
 # Scale amplitude vector to desired RMS
 RMS = np.sqrt(np.sum(Amp**2)) / 2**0.5
 rms_lim = peak_ampl/2**0.5
-gain = (rms_lim / RMS) * atten
+gain = rms_lim / RMS
 Amp = Amp * gain
 
 # Create exp(iwt) and complex amplitude, uses Euler formula
@@ -138,28 +135,35 @@ sig_set_used = np.reshape(signal_set[cond_idx,:],(1,numDOF))
 for k in range(reps):
     xt = np.tile(signal[:,sig_set_used[k,:]],(reps,1))
     xf = Amp_f[:,sig_set_used[k,:]]
-vel = np.gradient(xt,dt, axis=0)
+
+#sf[3:] = np.multiply(sf[3:], (np.pi/180))
+sfidx = np.nonzero(test_DOF)
+pos = np.zeros(xt.shape)
+for k in range(np.sum(test_DOF)):
+    pos[:,k] = xt[:,k] * sf[sfidx[0][k]]
+#pos = xt
+vel = np.gradient(pos,dt, axis=0)
 acc = np.gradient(vel,dt, axis=0)
 
 #%% Find frequency spectrum
-host_spec = sp.fft.fft(xf)
+host_spec = sp.fft.fft(pos[:,0])
 N = len(host_spec)
 n = np.arange(N)
 T = N/100
 freq = n/T
-#print(host_spec.shape)
+
 #%% Save multisine in .csv files
+test_pos = np.zeros((np.size(pos,0),6))
+test_vel = np.zeros((np.size(pos,0),6))
+test_acc = np.zeros((np.size(pos,0),6))
+ind = np.where(test_DOF!=0)
+
+for k in range(np.shape(pos)[1]):
+    test_pos[:,ind[0][k]] = pos[:,k]
+    test_vel[:,ind[0][k]] = vel[:,k]
+    test_acc[:,ind[0][k]] = acc[:,k]
+
 if save_test_files:
-    test_vals = np.zeros((np.size(xt,0),6))
-    test_pos = test_vals
-    test_vel = test_vals
-    test_acc = test_vals
-    ind = np.where(test_DOF!=0)
-    for k in range(np.size(xt,1)):
-        test_pos[:,ind[0][k]] = xt[:,k]
-        test_vel[:,ind[0][k]] = vel[:,k]
-        test_acc[:,ind[0][k]] = acc[:,k]
-    
     pos_file = save_file_name + " pos" + ".csv"
     vel_file = save_file_name + " vel" + ".csv"
     acc_file = save_file_name + " acc" + ".csv"
@@ -172,23 +176,47 @@ if save_test_files:
 #%% --------------------------------------------------------------------
 # Plot multisine signal
 # Modify the script below here to add new plots as desired.
-units = ["Pos/Rad", "Vel/RadVel", "Acc/RadAcc"]
+lUnits = ["Pos", "Vel", "Acc"]
+rUnits = ["Angle", "AngVel", "AngAcc"]
 DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
-fig, axs = plt.subplots(3)
+idx = np.nonzero(test_DOF)
 lines = []
-print(ind)
-print(DOFs)
-for k in range(numDOF):
-    axs[k].plot(t_vec.T,xt)
-    axs[k].set_ylabel(units[k])
-    axs[k].grid(visible=1,which='major',axis='both')
-    print(ind[0][k])
-    np.append(lines,DOFs[ind[0]],axis=0)
-lines = DOFs[test_DOF!=0]
-print(lines)
-plt.legend(lines)
-plt.xlabel("Time")
+if np.sum(test_DOF[0:3]) > 0:
+    fig1, axl = plt.subplots(3)
+    for k in range(np.sum(test_DOF[0:3])):
+        axl[0].plot(t_vec.T,pos[:,k])
+        axl[0].set_ylabel(lUnits[0])
+        axl[0].grid(visible=1,which='major',axis='both')
+        axl[1].plot(t_vec.T,vel[:,k])
+        axl[1].set_ylabel(lUnits[1])
+        axl[1].grid(visible=1,which='major',axis='both')
+        axl[2].plot(t_vec.T,acc[:,k])
+        axl[2].set_ylabel(lUnits[2])
+        axl[2].grid(visible=1,which='major',axis='both')
+        lines = np.append(lines, DOFs[ind[0][k]])
+    axl[0].legend(lines, loc="upper right")
+    axl[2].set_xlabel("Time")
 
+if np.sum(test_DOF[3:]) > 0:
+    fig2, axr = plt.subplots(3)
+    lines = []
+    for b in range(np.sum(test_DOF[3:])):
+        axr[0].plot(t_vec.T,pos[:,b+k+1])
+        axr[0].set_ylabel(rUnits[0])
+        axr[0].grid(visible=1,which='major',axis='both')
+        axr[1].plot(t_vec.T,vel[:,b+k+1])
+        axr[1].set_ylabel(rUnits[1])
+        axr[1].grid(visible=1,which='major',axis='both')
+        axr[2].plot(t_vec.T,acc[:,b+k+1])
+        axr[2].set_ylabel(rUnits[2])
+        axr[2].grid(visible=1,which='major',axis='both')
+        lines = np.append(lines, DOFs[ind[0][b+k+1]])
+    axr[0].legend(lines, loc="upper right")
+    axr[2].set_xlabel("Time")
+
+plt.figure()
+plt.stem(freq,np.abs(host_spec), basefmt=" ", markerfmt=" ")
+plt.xlim(0,f_range[1])
 plt.show()
 print("Program Complete")
