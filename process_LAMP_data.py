@@ -16,9 +16,10 @@ sr = 100 # sample rate
 dt = 0.01
 DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
-plotResponse = False
+plotResponse = True
+plotDiff = True
 plotSorted = False
-plotDiff = False
+plotSortedDiff = False
 plotDirComp = False
 plotSpec = True
 plotDiffSpec = False
@@ -63,6 +64,10 @@ for k in range(num_cols):
         c2h_data[:,k] = c2h_data[:,k] - c2h_data[0,k]
 
 # %% -----------------------------------------------------------------------------------------
+diff = np.zeros(h2c_data.shape)
+for k in range(num_cols):
+    diff[:,k] = (h2c_data[:,k] - c2h_data[:,k])
+
 h2c_sort, c2h_sort, diff_sort = lampDataFunc.testDataSort(h2c_data, c2h_data)
 
 h2cPos = h2c_data[:,0::3]
@@ -87,6 +92,19 @@ if plotResponse == True:
         axs[0].legend()
     plt.xlabel("Time [s]")
 
+if plotDiff == True:
+    iter = 0
+    for b in range(int(num_cols/3)):
+        fig, diffPlt = plt.subplots(3)
+        for k in range(3):
+            col = k + iter
+            diffPlt[k].plot(exp_time,diff[:,col], label="Commanded")
+            diffPlt[k].set_ylabel(units[k])
+            diffPlt[k].grid(visible=1,which='major',axis='both')
+        iter = iter + 3
+        axs[0].set_title(DOF[b])
+    plt.xlabel("Time [s]")
+
 if plotSorted == True:
     iter = 0
     for b in range(int(num_cols/3)):
@@ -102,13 +120,13 @@ if plotSorted == True:
         sortplt[0].legend()
     plt.xlabel("Index")
 
-if plotDiff == True:
-    fig, diffPlt = plt.subplots(3)
+if plotSortedDiff == True:
+    fig, sortDiff = plt.subplots(3)
     for k in range(num_cols):
-        diffPlt[k].plot(h2c_sort[:,k],diff_sort[:,k])
-        diffPlt[k].set_xlabel(units[k])
-        diffPlt[k].set_ylabel("Residual")
-        diffPlt[k].grid(visible=1,which="major",axis="both")
+        sortDiff[k].plot(h2c_sort[:,k],diff_sort[:,k])
+        sortDiff[k].set_xlabel(units[k])
+        sortDiff[k].set_ylabel("Residual")
+        sortDiff[k].grid(visible=1,which="major",axis="both")
     
 if plotDirComp == True:
     plt.figure()
