@@ -6,8 +6,8 @@ import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-#file_name = "RW_Second_Test_UDP.csv"
-file_name = "EM001_010-6_2.csv"
+file_name = "RW_Second_Test_UDP.csv"
+#file_name = "EM001_010-6_2.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
