@@ -6,8 +6,8 @@ import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "RW_Second_Test_UDP.csv"
-#file_name = "EM001_010-6_2.csv"
+#file_name = "RW_Second_Test_UDP.csv"
+file_name = "EM001_010-6_2.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
@@ -18,8 +18,8 @@ DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 plotResponse = True
 plotDiff = True
-plotSorted = False
-plotSortedDiff = False
+plotSorted = True
+plotSortedDiff = True
 plotDirComp = False
 plotSpec = True
 plotDiffSpec = False
@@ -140,11 +140,15 @@ if plotSpec == True:
         plt.stem(freq,np.abs(c2hSpec[:,k]), "r", markerfmt=" ", basefmt=" ")
         plt.title(DOF[k])
         plt.xlim((0,6))
+        plt.xlabel("Frequency [Hz]")
+        plt.ylabel("(Amplitude)")
 
 if plotDiffSpec == True:
     plt.figure()
     plt.stem(freq,np.abs(diffSpec), markerfmt=" ", basefmt=" ")
     plt.xlim(0,6)
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("(Amplitude)")
 
 print("Program Complete")
 plt.show()
