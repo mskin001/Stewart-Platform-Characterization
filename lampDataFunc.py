@@ -64,4 +64,14 @@ def freqDist(hostData, controlData, dt):
         
     return hostSpec, contSpec, diffSpec, freq
 
-
+def makeBode(hostData, controlData, expTime):
+    gain = np.zeros(np.shape(hostData))
+    phaseSft = np.zeros(np.shape(hostData)) 
+    for k in range(np.shape(hostData)[1]):
+        gain[:,k] = controlData[:,k] / hostData[:,k]
+        hostA = max(hostData[:,k])
+        contA = max(controlData[:,k])
+        hostFreq = np.arccos((hostData[:,k] / hostA)) / expTime
+        hostT = 1 / hostFreq
+        contFreq = np.arccos((controlData[:,k] / contA)) / expTime
+        contT = 1 / contFreq
