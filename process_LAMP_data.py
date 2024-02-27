@@ -6,8 +6,8 @@ import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-#file_name = "RW_Second_Test_UDP.csv"
-file_name = "EM001_010-6_2.csv"
+file_name = "RW_Second_Test_UDP.csv"
+#file_name = "EM001_010-6_2.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
@@ -19,9 +19,9 @@ DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 plotResponse = True
 plotDiff = True
 plotSorted = True
-plotSortedDiff = True
+plotSortedDiff = False
 plotDirComp = False
-plotSpec = True
+plotSpec = False
 plotDiffSpec = False
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
