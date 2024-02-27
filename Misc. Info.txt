@@ -1,0 +1,16 @@
+Test Profile File Names:
+
+TP00X_FFF-F_A_PVA
+^     ^     ^-- Amplitdue in the profile in [m]
+|     |-- Frequencies in the profile (005-2 = 0.05Hz - 2 Hz)
+|-- Test Profile Number (TP001 = Test Profile 001)
+
+Emulator and Real World file names will follow the same convension but
+substituting TP for EM or RW for emulator or Real World respectively.
+
+Signal Names:
+Data and variables beginning with "h2c" or "host" are signals sent to
+LAMP from the host. This is what we (the operators) are asking LAMP to
+do. Data and variables beginning with "c2h" or "control" or "cont" 
+are signals coming back from LAMP to us. This is the response, what
+LAMP is actually doing.
