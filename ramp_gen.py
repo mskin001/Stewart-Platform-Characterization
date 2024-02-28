@@ -3,11 +3,11 @@ from matplotlib import pyplot as plt
 import scipy as sp
 
 #Amp = [1] # maximum amplitude in [m]
-Amp = [0.1, 1.5]
+Amp = [0.6]
 #freq = [0.1, 2] # test freqency range [minFreq, maxFeq]
-freq = [0.1]
+freq = [0.1, 5]
 phase = 0 # phase angle in degrees
-testLength = 10 # [s]
+testLength = 200 # [s]
 dt = 0.01 # time step
 
 #%% -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ elif len(Amp) == 1 and len(freq) > 1:
 elif len(Amp) > 1 and len(freq) == 1:
     Amps = np.linspace(Amp[0], Amp[1], int(testLength/dt)) # construct frequency array
     dph = phase * (np.pi / 180) # convert to rad
-    pos = np.linspace(0, 1, len(t)) * np.sin((2*np.pi*freq[0]*t) + dph)
+    pos = Amps * np.sin((2*np.pi*freq[0]*t) + dph)
 
 vel = np.gradient(pos)
 acc = np.gradient(vel)
