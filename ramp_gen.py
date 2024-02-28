@@ -1,6 +1,5 @@
 import numpy as np
 from matplotlib import pyplot as plt
-import scipy as sp
 
 testDOF = [1, 0, 0, 1, 0, 0]
 testPoints = np.array([[1, 1, 1, 1], [0.1, 1, 0.1, 1]])
