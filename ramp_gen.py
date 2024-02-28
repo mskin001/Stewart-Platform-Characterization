@@ -2,53 +2,86 @@ import numpy as np
 from matplotlib import pyplot as plt
 import scipy as sp
 
-#Amp = [1] # maximum amplitude in [m]
-Amp = [0.6]
-#freq = [0.1, 2] # test freqency range [minFreq, maxFeq]
-freq = [0.1, 5]
-phase = 0 # phase angle in degrees
-testLength = 200 # [s]
+testDOF = [1, 0, 0, 1, 0, 0]
+testPoints = np.array([[1, 1, 1, 1], [0.1, 1, 0.1, 1]])
+phase = [0, 180] # phase angle in degrees
+testLength = 50 # [s]
 dt = 0.01 # time step
-
+save_test_files = False
+save_file_name = "Prelim 001"
 #%% -------------------------------------------------------------------------
 t = np.arange(0,testLength,dt)
+pos = np.zeros((len(t), np.sum(testDOF)))
+iter = 0
+for k in range(np.sum(testDOF)):
+    Amps = np.linspace(testPoints[0,iter], testPoints[0,iter+1], int(testLength/dt))
+    freqs = np.linspace(testPoints[1,iter], testPoints[1,iter+1], int(testLength/dt))
+    dph = phase[k] * (np.pi / 180)
+    pos[:,k] = Amps * np.sin((2*np.pi*freqs*t) + dph)
+    iter = iter + 2
 
-if len(Amp) > 1 and len(freq) > 1:
-    print("Max amplutde and frequency cannot both vary")
-    exit()
-elif len(Amp) == 1 and len(freq) > 1:
-    freqs = np.linspace(freq[0], freq[1], int(testLength/dt)) # construct frequency array
-    dph = phase * (np.pi / 180) # convert to rad
-    pos = Amp * np.sin((2*np.pi*freqs*t) + dph)
-elif len(Amp) > 1 and len(freq) == 1:
-    Amps = np.linspace(Amp[0], Amp[1], int(testLength/dt)) # construct frequency array
-    dph = phase * (np.pi / 180) # convert to rad
-    pos = Amps * np.sin((2*np.pi*freq[0]*t) + dph)
-
-vel = np.gradient(pos)
-acc = np.gradient(vel)
-
-posFreq = sp.fft.fft(pos)
-freqBins = sp.fft.fftfreq(np.size(posFreq), d=dt)
+vel = np.gradient(pos, axis=0)
+acc = np.gradient(vel, axis=0)
 
 #%% -------------------------------------------------------------------------
-fig1, ax1 = plt.subplots(3)
-ax1[0].plot(t,pos)
-ax1[0].set_ylabel("Pos")
-ax1[0].grid(visible=1,which='major',axis='both')
-ax1[1].plot(t,vel)
-ax1[1].set_ylabel("Vel")
-ax1[1].grid(visible=1,which='major',axis='both')
-ax1[2].plot(t,acc)
-ax1[2].set_ylabel("Acc")
-ax1[2].set_xlabel("Time [s]")
-ax1[2].grid(visible=1,which='major',axis='both')
+#%% Save multisine in .csv files
+test_pos = np.zeros((np.size(pos,0),6))
+test_vel = np.zeros((np.size(pos,0),6))
+test_acc = np.zeros((np.size(pos,0),6))
+ind = np.nonzero(testDOF)
 
-# plt.figure()
-# plt.plot(t,freqs)
+for k in range(np.shape(pos)[1]):
+    test_pos[:,ind[0][k]] = pos[:,k]
+    test_vel[:,ind[0][k]] = vel[:,k]
+    test_acc[:,ind[0][k]] = acc[:,k]
 
-plt.figure()
-plt.stem(freqBins,np.abs(posFreq), basefmt=" ", markerfmt=" ")
-plt.xlim(0,5)
+if save_test_files:
+    pos_file = save_file_name + " pos" + ".csv"
+    vel_file = save_file_name + " vel" + ".csv"
+    acc_file = save_file_name + " acc" + ".csv"
+    time_file = save_file_name + " time" + ".csv"
+    np.savetxt(pos_file,test_pos, delimiter=',')
+    np.savetxt(vel_file,test_vel, delimiter=',')
+    np.savetxt(acc_file,test_acc, delimiter=',')
+    np.savetxt(time_file,t, delimiter=',')
+
+#%% -------------------------------------------------------------------------
+lUnits = ["Pos", "Vel", "Acc"]
+rUnits = ["Angle", "AngVel", "AngAcc"]
+DOFs = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
+
+lines = []
+if np.sum(testDOF[0:3]) > 0:
+    fig1, axl = plt.subplots(3)
+    for k in range(np.sum(testDOF[0:3])):
+        axl[0].plot(t,pos[:,k])
+        axl[0].set_ylabel(lUnits[0])
+        axl[0].grid(visible=1,which='major',axis='both')
+        axl[1].plot(t,vel[:,k])
+        axl[1].set_ylabel(lUnits[1])
+        axl[1].grid(visible=1,which='major',axis='both')
+        axl[2].plot(t,acc[:,k])
+        axl[2].set_ylabel(lUnits[2])
+        axl[2].grid(visible=1,which='major',axis='both')
+        lines = np.append(lines, DOFs[ind[0][k]])
+    axl[0].legend(lines, loc="upper right")
+    axl[2].set_xlabel("Time")
+
+if np.sum(testDOF[3:]) > 0:
+    fig2, axr = plt.subplots(3)
+    lines = []
+    for b in range(np.sum(testDOF[3:])):
+        axr[0].plot(t,pos[:,b+k+1])
+        axr[0].set_ylabel(rUnits[0])
+        axr[0].grid(visible=1,which='major',axis='both')
+        axr[1].plot(t,vel[:,b+k+1])
+        axr[1].set_ylabel(rUnits[1])
+        axr[1].grid(visible=1,which='major',axis='both')
+        axr[2].plot(t,acc[:,b+k+1])
+        axr[2].set_ylabel(rUnits[2])
+        axr[2].grid(visible=1,which='major',axis='both')
+        lines = np.append(lines, DOFs[ind[0][b+k+1]])
+    axr[0].legend(lines, loc="upper right")
+    axr[2].set_xlabel("Time")
 
 plt.show()
