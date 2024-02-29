@@ -1,10 +1,10 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-testDOF = [1, 0, 0, 1, 0, 0]
-testPoints = np.array([[1, 1, 1, 1], [0.1, 1, 0.1, 1]])
-phase = [0, 180] # phase angle in degrees
-testLength = 50 # [s]
+testDOF = [1, 0, 0, 0, 0, 0]
+testPoints = np.array([[1, 1], [0.1, 1, 0.1, 1]])
+phase = [0, 0] # phase angle in degrees
+testLength = 200 # [s]
 dt = 0.01 # time step
 save_test_files = False
 save_file_name = "Prelim 001"

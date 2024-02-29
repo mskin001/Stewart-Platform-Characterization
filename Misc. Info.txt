@@ -1,8 +1,9 @@
 Test Profile File Names:
 
-TP00X_FFF-F_A_PVA
-^     ^     ^-- Amplitdue in the profile in [m]
-|     |-- Frequencies in the profile (005-2 = 0.05Hz - 2 Hz)
+TP000-000000-FFF-A-PVA
+^     ^      ^   ^-- Amplitdue in the profile in [m]
+|     |      |-- Frequencies in the profile, last digit is the largest frequency in Hz (052 = 0.05Hz - 2 Hz)
+|     |-- DOF in the test profile with 1 included and 0 not included (Surge, Sway, Heave, Roll, Pitch, Yaw) (100010 = Surge, Pitch)
 |-- Test Profile Number (TP001 = Test Profile 001)
 
 Emulator and Real World file names will follow the same convension but
