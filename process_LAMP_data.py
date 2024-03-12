@@ -6,8 +6,8 @@ import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "RW_Second_Test_UDP.csv"
-#file_name = "EM001_010-6_2.csv"
+#file_name = "RW_Second_Test_UDP.csv"
+file_name = "EM001_010-6_2.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
@@ -18,11 +18,11 @@ DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 plotResponse = True
 plotDiff = True
-plotSorted = False
+plotSorted = True
 plotSortedDiff = False
 plotDirComp = False
 plotSpec = True
-plotDiffSpec = False
+plotDiffSpec = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
@@ -136,15 +136,19 @@ if plotDirComp == True:
 if plotSpec == True:
     for k in range(np.shape(h2cSpec)[1]):
         plt.figure()
-        plt.stem(freq,np.abs(h2cSpec[:,k]), "b", markerfmt=" ", basefmt=" ")
-        plt.stem(freq,np.abs(c2hSpec[:,k]), "r", markerfmt=" ", basefmt=" ")
+        plt.stem(freq,np.abs(h2cSpec[:,k]), "b", markerfmt=" ", basefmt=" ", linefmt="blue")
+        plt.stem(freq,np.abs(c2hSpec[:,k]), "r", markerfmt=" ", basefmt=" ", linefmt="orange")
         plt.title(DOF[k])
         plt.xlim((0,6))
+        plt.xlabel("Frequency [Hz]")
+        plt.ylabel("(Amplitude)")
 
 if plotDiffSpec == True:
     plt.figure()
     plt.stem(freq,np.abs(diffSpec), markerfmt=" ", basefmt=" ")
     plt.xlim(0,6)
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("(Amplitude)")
 
 print("Program Complete")
 plt.show()
