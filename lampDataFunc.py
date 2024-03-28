@@ -64,9 +64,10 @@ def freqDist(hostData, controlData, dt):
         
     return hostSpec, contSpec, diffSpec, freq
 
-def bestFitModel(x, y, numSines):
+def tfestimate(x, y):
 
-    def sinFunc(t, *argv, c):
-        return argv * np.sin(argv * t + argv) + c
-    
-    popt, pcov = sp.optimize.curve_fit(sinFunc, x, y)
+    fyx, Pyx = sp.signal.csd(y.T,x.T)
+    fxx, Pxx = sp.signal.welch(x.T)
+    H = Pyx/Pxx
+
+    return H, fyx, fxx

@@ -18,7 +18,7 @@ DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 plotResponse = True
 plotDiff = True
-plotSorted = True
+plotSorted = False
 plotSortedDiff = False
 plotDirComp = False
 plotSpec = True
@@ -74,6 +74,7 @@ h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
 h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 
+tf, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos)
 
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
@@ -151,6 +152,11 @@ if plotDiffSpec == True:
     plt.xlim(0,6)
     plt.xlabel("Frequency [Hz]")
     plt.ylabel("(Amplitude)")
+
+plt.figure()
+plt.plot(fyx*10, 20*np.log10(np.abs(tf.T)))
+plt.xlabel("Frequency [Hz]")
+plt.ylabel("Magnitude [dB]")
 
 print("Program Complete")
 plt.show()
