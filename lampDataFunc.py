@@ -69,5 +69,6 @@ def tfestimate(x, y):
     fyx, Pyx = sp.signal.csd(y.T,x.T)
     fxx, Pxx = sp.signal.welch(x.T)
     H = Pyx/Pxx
+    ph = np.angle(H, deg=True)
 
-    return H, fyx, fxx
+    return H, ph, fyx, fxx

@@ -17,12 +17,13 @@ dt = 0.01
 DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 plotResponse = True
-plotDiff = True
+plotDiff = False
 plotSorted = False
 plotSortedDiff = False
 plotDirComp = False
 plotSpec = True
-plotDiffSpec = True
+plotDiffSpec = False
+plotBode = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
@@ -74,7 +75,7 @@ h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
 h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 
-tf, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos)
+tf, ph, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos)
 
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
@@ -83,7 +84,7 @@ units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]",
 if plotResponse == True:
     iter = 0
     for b in range(int(num_cols/3)):
-        fig, axs = plt.subplots(3)
+        fig, axs = plt.subplots(3, sharex=True)
         for k in range(3):
             col = k + iter
             axs[k].plot(exp_time,h2c_data[:,col], label="Commanded")
@@ -98,7 +99,7 @@ if plotResponse == True:
 if plotDiff == True:
     iter = 0
     for b in range(int(num_cols/3)):
-        fig, diffPlt = plt.subplots(3)
+        fig, diffPlt = plt.subplots(3, sharex=True)
         for k in range(3):
             col = k + iter
             diffPlt[k].plot(exp_time,diff[:,col], label="Commanded")
@@ -111,7 +112,7 @@ if plotDiff == True:
 if plotSorted == True:
     iter = 0
     for b in range(int(num_cols/3)):
-        fig, sortplt = plt.subplots(3)
+        fig, sortplt = plt.subplots(3, sharex=True)
         for k in range(3):
             col = k + iter
             sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,col], label="Commanded")
@@ -153,10 +154,15 @@ if plotDiffSpec == True:
     plt.xlabel("Frequency [Hz]")
     plt.ylabel("(Amplitude)")
 
-plt.figure()
-plt.plot(fyx*10, 20*np.log10(np.abs(tf.T)))
-plt.xlabel("Frequency [Hz]")
-plt.ylabel("Magnitude [dB]")
+if plotBode == True:
+    fig, bod = plt.subplots(2, sharex=True)
+    bod[0].semilogx(fyx*10, 20*np.log10(np.abs(tf.T)))
+    bod[1].semilogx(fyx*10, ph.T)
+    bod[0].set_ylabel("Magnitude [dB]")
+    bod[0].grid(visible=1,which="major",axis="both")
+    bod[1].grid(visible=1,which="major",axis="both")
+    bod[1].set_ylabel("Phase [deg]")
+    plt.xlabel("Frequency [Hz]")
 
 print("Program Complete")
 plt.show()
