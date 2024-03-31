@@ -17,12 +17,12 @@ dt = 0.01
 DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
 plotResponse = True
-plotDiff = False
-plotSorted = False
+plotDiff = True
+plotSorted = True
 plotSortedDiff = False
-plotDirComp = False
+plotDirComp = True
 plotSpec = True
-plotDiffSpec = False
+plotDiffSpec = True
 plotBode = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
@@ -87,8 +87,8 @@ if plotResponse == True:
         fig, axs = plt.subplots(3, sharex=True)
         for k in range(3):
             col = k + iter
-            axs[k].plot(exp_time,h2c_data[:,col], label="Commanded")
-            axs[k].plot(exp_time,c2h_data[:,col], label="Result")
+            axs[k].plot(exp_time,h2c_data[:,col], label="Input")
+            axs[k].plot(exp_time,c2h_data[:,col], label="Output")
             axs[k].set_ylabel(units[k])
             axs[k].grid(visible=1,which='major',axis='both')
         iter = iter + 3
@@ -102,7 +102,7 @@ if plotDiff == True:
         fig, diffPlt = plt.subplots(3, sharex=True)
         for k in range(3):
             col = k + iter
-            diffPlt[k].plot(exp_time,diff[:,col], label="Commanded")
+            diffPlt[k].plot(exp_time,diff[:,col], label="Residual")
             diffPlt[k].set_ylabel(units[k])
             diffPlt[k].grid(visible=1,which='major',axis='both')
         iter = iter + 3
@@ -115,8 +115,8 @@ if plotSorted == True:
         fig, sortplt = plt.subplots(3, sharex=True)
         for k in range(3):
             col = k + iter
-            sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,col], label="Commanded")
-            sortplt[k].plot(np.arange(0,num_rows,1),c2h_sort[:,col], label="Result")
+            sortplt[k].plot(np.arange(0,num_rows,1),h2c_sort[:,col], label="Input")
+            sortplt[k].plot(np.arange(0,num_rows,1),c2h_sort[:,col], label="Output")
             sortplt[k].set_ylabel(units[k])
             sortplt[k].grid(visible=1,which="major",axis="both")
         iter = iter + 3
@@ -156,9 +156,9 @@ if plotDiffSpec == True:
 
 if plotBode == True:
     fig, bod = plt.subplots(2, sharex=True)
-    bod[0].semilogx(fyx*10, 20*np.log10(np.abs(tf.T)))
+    bod[0].semilogx(fyx*10, (np.abs(tf.T)))
     bod[1].semilogx(fyx*10, ph.T)
-    bod[0].set_ylabel("Magnitude [dB]")
+    bod[0].set_ylabel("Gain")
     bod[0].grid(visible=1,which="major",axis="both")
     bod[1].grid(visible=1,which="major",axis="both")
     bod[1].set_ylabel("Phase [deg]")
