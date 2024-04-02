@@ -6,13 +6,13 @@ import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
-file_name = "Pioneer_2024_02_13_20_46_01.csv"
-#file_name = "EM001_010-6_2.csv"
+#file_name = "Pioneer_2024_02_13_20_01_38.csv"
+file_name = "EM001_010-6_2.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
 
-sr = 100 # sample rate
+sf = 100 # sample rate
 dt = 0.01
 DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
@@ -76,7 +76,8 @@ h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
 h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 
-tf, ph, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos)
+wind = "hann"
+tf, ph, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos, sf, wind)
 
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
