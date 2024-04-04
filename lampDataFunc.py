@@ -64,13 +64,11 @@ def freqDist(hostData, controlData, dt):
         
     return hostSpec, contSpec, diffSpec, freq
 
-def tfestimate(x, y, sf, win):
+def tfestimate(x, y, seg):
 
-    fyx, Pyx = sp.signal.csd(y.T,x.T, sf, win)
-    fxx, Pxx = sp.signal.welch(x.T, sf, win)
-    PyxMat = np.matmul(Pyx.T, Pyx)
-    PxxMat = np.linalg.inf(np.matmul(Pxx.T, Pxx))
-    H = np.matmul(PyxMat, PxxMat)
+    fyx, Pyx = sp.signal.csd(y.T,x.T, nperseg=seg)
+    fxx, Pxx = sp.signal.welch(x.T, nperseg=seg)
+    H = Pyx / Pxx
     ph = np.angle(H, deg=True)
 
     return H, ph, fyx, fxx

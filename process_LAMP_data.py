@@ -12,7 +12,7 @@ emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
 
-sf = 100 # sample rate
+sf = 25 # sample rate
 dt = 0.01
 DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
@@ -23,7 +23,7 @@ plotSortedDiff = False
 plotDirComp = False
 plotSpec = False
 plotDiffSpec = False
-plotBode = False
+plotBode = True
 # %% -----------------------------------------------------------------------------------------
 dir_PVA_map = np.array([[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                [26, 32, 38, 27, 33, 39, 28, 34, 40, 29, 35, 41, 30, 36, 42, 31, 37, 43]])
@@ -76,8 +76,8 @@ h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
 h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 
-wind = "hann"
-tf, ph, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos, sf, wind)
+wind = ("boxcar", 2)
+tf, ph, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos, len(h2cPos)/sf)
 
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
