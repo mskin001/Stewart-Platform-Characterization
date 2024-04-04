@@ -2,12 +2,12 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 testDOF = [1, 0, 0, 0, 0, 0]
-testPoints = np.array([[0.1, 1.8], [0.1, 5]]) #([amps], [freqs])
+testPoints = np.array([[1, 1], [0.01, 6]]) #([amp], [freqs])
 phase = [0, 0] # phase angle in degrees
-testLength = 200 # [s]
+testLength = 300 # [s]
 dt = 0.01 # time step
-save_test_files = False
-save_file_name = "Prelim 001"
+save_test_files = True
+save_file_name = "TP009-100000-016-1"
 #%% -------------------------------------------------------------------------
 t = np.arange(0,testLength,dt)
 pos = np.zeros((len(t), np.sum(testDOF)))
