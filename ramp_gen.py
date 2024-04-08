@@ -1,8 +1,9 @@
 import numpy as np
+import scipy as sp
 from matplotlib import pyplot as plt
 
 testDOF = [1, 0, 0, 0, 0, 0]
-testPoints = np.array([[1, 1], [0.01, 6]]) #([amp], [freqs])
+testPoints = np.array([[1, 1], [0.1, 2.5]]) #([amp], [freqs])
 phase = [0, 0] # phase angle in degrees
 testLength = 300 # [s]
 dt = 0.01 # time step
@@ -22,6 +23,8 @@ for k in range(np.sum(testDOF)):
 vel = np.gradient(pos, axis=0)
 acc = np.gradient(vel, axis=0)
 
+freqResp = sp.fft.fftn(pos)
+freq = sp.fft.fftfreq(np.size(freqResp), d=dt)
 #%% -------------------------------------------------------------------------
 #%% Save multisine in .csv files
 test_pos = np.zeros((np.size(pos,0),6))
@@ -82,5 +85,11 @@ if np.sum(testDOF[3:]) > 0:
         lines = np.append(lines, DOFs[ind[0][b+k+1]])
     axr[0].legend(lines, loc="upper right")
     axr[2].set_xlabel("Time")
+
+plt.figure()
+plt.stem(freq,np.abs(freqResp), "b", markerfmt=" ", basefmt=" ", linefmt="blue")
+plt.xlim((0,10))
+plt.xlabel("Frequency [Hz]")
+plt.ylabel("(Amplitude)")
 
 plt.show()

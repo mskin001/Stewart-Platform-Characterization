@@ -7,12 +7,13 @@ import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
 #file_name = "Pioneer_2024_02_13_20_01_38.csv"
-file_name = "EM001_010-6_2.csv"
+#file_name = "EM001_010-6_2.csv"
+file_name = "RW_Pioneer_Heave_2024_02_14_16_19_40.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
 
-sf = 25 # sample rate
+#sf = 25 # sample rate
 dt = 0.01
 DOF = ["Surge", "Sway", "Heave", "Roll", "Pitch", "Yaw"]
 
@@ -21,7 +22,7 @@ plotDiff = True
 plotSorted = False
 plotSortedDiff = False
 plotDirComp = False
-plotSpec = False
+plotSpec = True
 plotDiffSpec = False
 plotBode = True
 # %% -----------------------------------------------------------------------------------------
@@ -76,8 +77,7 @@ h2cPos = h2c_data[:,0::3]
 c2hPos = c2h_data[:,0::3]
 h2cSpec, c2hSpec, diffSpec, freq = lampDataFunc.freqDist(h2cPos, c2hPos, dt)
 
-wind = ("boxcar", 2)
-tf, ph, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos, len(h2cPos)/sf)
+tf, ph, fyx, fxx = lampDataFunc.tfestimate(h2cPos, c2hPos) #len(h2cPos)/sf)
 
 # %% -----------------------------------------------------------------------------------------
 units = ["Pos [m]", "Vel [m/s]", "Acc [m/s^2]", 
@@ -94,7 +94,7 @@ if plotResponse == True:
             axs[k].set_ylabel(units[k])
             axs[k].grid(visible=1,which='major',axis='both')
         iter = iter + 3
-        axs[0].set_title(DOF[b])
+        #axs[0].set_title(DOF[b])
         axs[0].legend()
     plt.xlabel("Time [s]")
 
@@ -108,7 +108,7 @@ if plotDiff == True:
             diffPlt[k].set_ylabel(units[k])
             diffPlt[k].grid(visible=1,which='major',axis='both')
         iter = iter + 3
-        axs[0].set_title(DOF[b])
+        #axs[0].set_title(DOF[b])
     plt.xlabel("Time [s]")
 
 if plotSorted == True:
@@ -122,7 +122,7 @@ if plotSorted == True:
             sortplt[k].set_ylabel(units[k])
             sortplt[k].grid(visible=1,which="major",axis="both")
         iter = iter + 3
-        sortplt[0].set_title(DOF[b])
+        #sortplt[0].set_title(DOF[b])
         sortplt[0].legend()
     plt.xlabel("Index")
 
