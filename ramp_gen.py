@@ -3,12 +3,12 @@ import scipy as sp
 from matplotlib import pyplot as plt
 
 testDOF = [0, 0, 1, 0, 0, 0]
-testPoints = np.array([[0.5, 0.5], [0.025, 0.25]]) #([amp], [freqs])
+testPoints = np.array([[0.1, 1.2], [0.25, 0.25]]) #([amp], [freqs])
 phase = [0, 0] # phase angle in degrees
 testLength = 200 # [s]
 dt = 0.01 # time step
-save_test_files = False
-save_file_name = "TP013-000100-0105-05"
+save_test_files = True
+save_file_name = "TP016-He-p5-p5-p1-1p2"
 #%% -------------------------------------------------------------------------
 t = np.arange(0,testLength,dt)
 pos = np.zeros((len(t), np.sum(testDOF)))
@@ -73,16 +73,16 @@ if np.sum(testDOF[3:]) > 0:
     fig2, axr = plt.subplots(3)
     lines = []
     for b in range(np.sum(testDOF[3:])):
-        axr[0].plot(t,pos[:,b+k+1])
+        axr[0].plot(t,pos[:,b+k+0])
         axr[0].set_ylabel(rUnits[0])
         axr[0].grid(visible=1,which='major',axis='both')
-        axr[1].plot(t,vel[:,b+k+1])
+        axr[1].plot(t,vel[:,b+k+0])
         axr[1].set_ylabel(rUnits[1])
         axr[1].grid(visible=1,which='major',axis='both')
-        axr[2].plot(t,acc[:,b+k+1])
+        axr[2].plot(t,acc[:,b+k+0])
         axr[2].set_ylabel(rUnits[2])
         axr[2].grid(visible=1,which='major',axis='both')
-        lines = np.append(lines, DOFs[ind[0][b+k+1]])
+        lines = np.append(lines, DOFs[ind[0][b+k+0]])
     axr[0].legend(lines, loc="upper right")
     axr[2].set_xlabel("Time")
 
