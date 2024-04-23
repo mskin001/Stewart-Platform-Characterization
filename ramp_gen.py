@@ -2,13 +2,13 @@ import numpy as np
 import scipy as sp
 from matplotlib import pyplot as plt
 
-testDOF = [1, 0, 0, 0, 0, 0]
-testPoints = np.array([[1, 1], [0.1, 2.5]]) #([amp], [freqs])
+testDOF = [0, 0, 1, 0, 0, 0]
+testPoints = np.array([[0.5, 0.5], [0.025, 0.25]]) #([amp], [freqs])
 phase = [0, 0] # phase angle in degrees
-testLength = 300 # [s]
+testLength = 200 # [s]
 dt = 0.01 # time step
-save_test_files = True
-save_file_name = "TP009-100000-016-1"
+save_test_files = False
+save_file_name = "TP013-000100-0105-05"
 #%% -------------------------------------------------------------------------
 t = np.arange(0,testLength,dt)
 pos = np.zeros((len(t), np.sum(testDOF)))
@@ -88,7 +88,7 @@ if np.sum(testDOF[3:]) > 0:
 
 plt.figure()
 plt.stem(freq,np.abs(freqResp), "b", markerfmt=" ", basefmt=" ", linefmt="blue")
-plt.xlim((0,10))
+plt.xlim((0,2))
 plt.xlabel("Frequency [Hz]")
 plt.ylabel("(Amplitude)")
 

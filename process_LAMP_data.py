@@ -7,8 +7,9 @@ import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
 #file_name = "Pioneer_2024_02_13_20_01_38.csv"
+file_name = "EM009_100000_016_1.csv"
 #file_name = "EM001_010-6_2.csv"
-file_name = "RW_Pioneer_Heave_2024_02_14_16_19_40.csv"
+#file_name = "RW_Pioneer_Heave_2024_02_14_16_19_40.csv"
 emfolder = "Characterization Data\Emulator Results"
 tpfolder = "Characterization Data\Test Profiles"
 rwfolder = "Characterization Data\Real World Results"
@@ -43,7 +44,7 @@ with open(full_file, "r") as file:
     header = next(csvreader)
 
 raw_data = np.loadtxt(full_file, dtype='float', delimiter=',', skiprows=1)
-time_col = header.index("H2C time (us)")
+time_col = 0 #header.index("H2C time (us)")
 raw_time = raw_data[:,time_col]
 exp_time = (raw_time - raw_time[0]) / 100
 
