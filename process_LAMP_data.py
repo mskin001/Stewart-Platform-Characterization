@@ -9,9 +9,10 @@ import lampDataFunc
 #file_name = "EM009_100000_016_1.csv"
 #file_name = "EM001_010-6_2.csv"
 #file_name = "RW_Pioneer_Heave_2024_02_14_16_19_40.csv"
-file_name = "RW011-Su-p05-p5-p5-p5.csv"
-#file_name = "RW012-He-p05-p5-p5-p5.csv"
+#file_name = "RW011-Su-p05-p5-p5-p5.csv"
+file_name = "RW012-He-p05-p5-p5-p5.csv"
 #file_name = "RW013-Sw-p05-p5-p5-p5.csv"
+#file_name = "RW014-Su-p5-p5-p1-1p2.csv"
 saveTFdata = False
 
 plotResponse = False
@@ -21,7 +22,7 @@ plotSortedDiff = False
 plotDirComp = False
 plotSpec = True
 plotDiffSpec = False
-plotBode = True
+plotBode = False
 
 # %% -----------------------------------------------------------------------------------------
 dt = 0.01
@@ -170,8 +171,8 @@ if plotSpec == True:
     plt.stem(freq,np.abs(h2cSpec[:,dirOfInt]), "b", markerfmt=" ", basefmt=" ", linefmt="blue")
     plt.stem(freq,np.abs(c2hSpec[:,dirOfInt]), "r", markerfmt=" ", basefmt=" ", linefmt="orange")
     #plt.title(DOF[k])
-    plt.xlim((0,0.7))
-    plt.ylim((0,700))
+    #plt.xlim((0,0.7))
+    #plt.ylim((0,700))
     plt.xlabel("Frequency [Hz]")
     plt.ylabel("(Amplitude)")
 

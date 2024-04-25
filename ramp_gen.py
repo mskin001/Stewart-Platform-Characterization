@@ -3,7 +3,7 @@ import scipy as sp
 from matplotlib import pyplot as plt
 
 testDOF = [0, 0, 1, 0, 0, 0]
-testPoints = np.array([[0.5, 0.5], [0.025, 0.25]]) #([amp], [freqs])
+testPoints = np.array([[1, 1], [0.25, 0.5]]) #([amp], [freqs])
 phase = [0, 0] # phase angle in degrees
 testLength = 200 # [s]
 dt = 0.01 # time step

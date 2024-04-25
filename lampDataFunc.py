@@ -64,7 +64,7 @@ def freqDist(hostData, controlData, dt):
         
     return hostSpec, contSpec, diffSpec, freq
 
-def tfestimate(x, y, dirOfInt, dt): #coupled transfer function estimate
+def tfestimate(x, y, dirOfInt, dt): #transfer function estimates
 
     inputArray = np.zeros((len(x[:,1]),6))
     for k in range(6):
