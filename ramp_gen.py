@@ -3,11 +3,11 @@ import scipy as sp
 from matplotlib import pyplot as plt
 
 testDOF = [0, 0, 1, 0, 0, 0]
-testPoints = np.array([[0.1, 1.2], [0.25, 0.25]]) #([amp], [freqs])
+testPoints = np.array([[0.5, 0.5], [0.025, 0.25]]) #([amp], [freqs])
 phase = [0, 0] # phase angle in degrees
 testLength = 200 # [s]
 dt = 0.01 # time step
-save_test_files = True
+save_test_files = False
 save_file_name = "TP016-He-p5-p5-p1-1p2"
 #%% -------------------------------------------------------------------------
 t = np.arange(0,testLength,dt)

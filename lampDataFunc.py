@@ -64,10 +64,13 @@ def freqDist(hostData, controlData, dt):
         
     return hostSpec, contSpec, diffSpec, freq
 
-def tfestimate(x, y):
+def tfestimate(x, y, dirOfInt, dt): #coupled transfer function estimate
 
-    fyx, Pyx = sp.signal.csd(y.T,x.T)
-    fxx, Pxx = sp.signal.welch(x.T)
+    inputArray = np.zeros((len(x[:,1]),6))
+    for k in range(6):
+        inputArray[:,k] = x[:,dirOfInt]
+    fyx, Pyx = sp.signal.csd(y,inputArray, fs=dt, axis=0)
+    fxx, Pxx = sp.signal.welch(inputArray, fs=dt, axis=0)
     H = Pyx / Pxx
     ph = np.angle(H, deg=True)
 
