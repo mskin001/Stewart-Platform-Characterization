@@ -2,27 +2,27 @@ import os
 import csv
 from matplotlib import pyplot as plt
 import numpy as np
-import scipy as sp
 import lampDataFunc
 
 # %% -----------------------------------------------------------------------------------------
 #file_name = "EM009_100000_016_1.csv"
 #file_name = "EM001_010-6_2.csv"
 #file_name = "RW_Pioneer_Heave_2024_02_14_16_19_40.csv"
-#file_name = "RW011-Su-p05-p5-p5-p5.csv"
-file_name = "RW012-He-p05-p5-p5-p5.csv"
+file_name = "RW011-Su-p05-p5-p5-p5.csv"
+#file_name = "RW011-Su-p05-p5-p5-p5-HF.csv"
+#file_name = "RW012-He-p05-p5-p5-p5.csv"
 #file_name = "RW013-Sw-p05-p5-p5-p5.csv"
-#file_name = "RW014-Su-p5-p5-p1-1p2.csv"
-saveTFdata = False
+#file_name = "RW014-Su-p25-p25-p1-1p2.csv"
+saveTFdata = True
 
-plotResponse = False
+plotResponse = True
 plotDiff = False
 plotSorted = False
 plotSortedDiff = False
 plotDirComp = False
 plotSpec = True
 plotDiffSpec = False
-plotBode = False
+plotBode = True
 
 # %% -----------------------------------------------------------------------------------------
 dt = 0.01
@@ -186,7 +186,7 @@ if plotDiffSpec == True:
 if plotBode == True:
     for k in range(6):
         fig, bod = plt.subplots(2, sharex=True)
-        bod[0].semilogx(fyx*dt, (np.abs(tf[:,k])))
+        bod[0].semilogx(fyx*dt, np.abs(tf[:,k]))
         bod[1].semilogx(fyx*dt, tLag[:,k])
         bod[0].set_ylabel("Gain")
         bod[0].grid(visible=1,which="major",axis="both")
