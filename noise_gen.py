@@ -141,7 +141,7 @@ sfidx = np.nonzero(test_DOF)
 pos = np.zeros(xt.shape)
 for k in range(np.sum(test_DOF)):
     pos[:,k] = xt[:,k] * sf[sfidx[0][k]]
-#pos = xt
+
 vel = np.gradient(pos,dt, axis=0)
 acc = np.gradient(vel,dt, axis=0)
 

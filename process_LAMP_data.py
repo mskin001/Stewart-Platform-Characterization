@@ -11,9 +11,11 @@ import lampDataFunc
 file_name = "RW011-Su-p05-p5-p5-p5.csv"
 #file_name = "RW011-Su-p05-p5-p5-p5-HF.csv"
 #file_name = "RW012-He-p05-p5-p5-p5.csv"
+#file_name = "RW012-He-p05-p5-p5-p5-HF.csv"
 #file_name = "RW013-Sw-p05-p5-p5-p5.csv"
+#file_name = "RW013-Sw-p05-p5-p5-p5-HF.csv"
 #file_name = "RW014-Su-p25-p25-p1-1p2.csv"
-saveTFdata = True
+saveTFdata = False
 
 plotResponse = True
 plotDiff = False
@@ -60,7 +62,11 @@ time_col = 0
 raw_time = raw_data[:,time_col]
 exp_time = (raw_time - raw_time[0])
 
-h2c_start = header.index("H2C surge P")
+try:
+    h2c_start = header.index("H2C surge P")
+except:
+    h2c_start = header.index("Motion.KinematicsFwd->ComPose0")
+    
 h2c_cols = np.arange(h2c_start,h2c_start+18,1)
 num_cols = len(h2c_cols)
 num_rows = len(raw_data)
@@ -171,8 +177,8 @@ if plotSpec == True:
     plt.stem(freq,np.abs(h2cSpec[:,dirOfInt]), "b", markerfmt=" ", basefmt=" ", linefmt="blue")
     plt.stem(freq,np.abs(c2hSpec[:,dirOfInt]), "r", markerfmt=" ", basefmt=" ", linefmt="orange")
     #plt.title(DOF[k])
-    #plt.xlim((0,0.7))
-    #plt.ylim((0,700))
+    plt.xlim((0,0.7))
+    plt.ylim((0,700))
     plt.xlabel("Frequency [Hz]")
     plt.ylabel("(Amplitude)")
 

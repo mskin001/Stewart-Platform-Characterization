@@ -2,8 +2,8 @@ import numpy as np
 import scipy as sp
 from matplotlib import pyplot as plt
 
-testDOF = [0, 0, 1, 0, 0, 0]
-testPoints = np.array([[1, 1], [0.25, .75]]) #([amp], [freqs])
+testDOF = [0, 1, 0, 0, 0, 0]
+testPoints = np.array([[1, 1], [.5, 1]]) #([amp], [freqs])
 phase = [0, 0] # phase angle in degrees
 testLength = 20 # [s]
 dt = 0.01 # time step
@@ -25,6 +25,7 @@ acc = np.gradient(vel, axis=0)
 
 freqResp = sp.fft.fftn(pos)
 freq = sp.fft.fftfreq(np.size(freqResp), d=dt)
+
 #%% -------------------------------------------------------------------------
 #%% Save multisine in .csv files
 test_pos = np.zeros((np.size(pos,0),6))
