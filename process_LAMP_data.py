@@ -8,23 +8,23 @@ import lampDataFunc
 #file_name = "EM009_100000_016_1.csv"
 #file_name = "EM001_010-6_2.csv"
 #file_name = "RW_Pioneer_Heave_2024_02_14_16_19_40.csv"
-file_name = "RW011-Su-p05-p5-p5-p5.csv"
-#file_name = "RW011-Su-p05-p5-p5-p5-HF.csv"
+#file_name = "RW011-Su-p05-p5-p5-p5.csv"
+file_name = "RW011-Su-p05-p5-p5-p5-HF.csv"
 #file_name = "RW012-He-p05-p5-p5-p5.csv"
 #file_name = "RW012-He-p05-p5-p5-p5-HF.csv"
 #file_name = "RW013-Sw-p05-p5-p5-p5.csv"
 #file_name = "RW013-Sw-p05-p5-p5-p5-HF.csv"
 #file_name = "RW014-Su-p25-p25-p1-1p2.csv"
-saveTFdata = False
+saveTFdata = True
 
-plotResponse = True
+plotResponse = False
 plotDiff = False
 plotSorted = False
 plotSortedDiff = False
 plotDirComp = False
-plotSpec = True
+plotSpec = False
 plotDiffSpec = False
-plotBode = True
+plotBode = False
 
 # %% -----------------------------------------------------------------------------------------
 dt = 0.01
