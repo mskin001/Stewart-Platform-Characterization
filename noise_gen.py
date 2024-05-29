@@ -45,14 +45,14 @@ import scipy as sp
 # ----------------------------------------------------------------------------------
 
 #%% Initialize parameters
-test_DOF = np.array([1, 1, 1, 1, 1, 1]) #[surge, sway, heave, roll, pitch, yaw]
+test_DOF = np.array([1, 0, 0, 0, 0, 0]) #[surge, sway, heave, roll, pitch, yaw]
 save_file_name = "TP008_005-2_1" # Test file name
 save_test_files = False # True = save the signal files, Files = Do not save
 
 T = 200 # Test length in seconds
 dt = 0.01 
 f_range = [0.05, 2] # Desired frequency range
-c = 1.25 # exponential factor controlling random noise decay, 1 = pink noise
+c = 1 # exponential factor controlling rhgjkandom noise decay, 1 = pink noise
 peak_ampl = 0.65 #approximate peak amplitude, subject to change based on randomness
 # Scale factor, the amount to reduce the signal by (i.e. gain)
 sf = [1, 1, 1, 15, 15, 15] #[m, m, m, deg, deg, deg]
@@ -141,7 +141,7 @@ sfidx = np.nonzero(test_DOF)
 pos = np.zeros(xt.shape)
 for k in range(np.sum(test_DOF)):
     pos[:,k] = xt[:,k] * sf[sfidx[0][k]]
-#pos = xt
+
 vel = np.gradient(pos,dt, axis=0)
 acc = np.gradient(vel,dt, axis=0)
 
@@ -217,6 +217,6 @@ if np.sum(test_DOF[3:]) > 0:
 
 plt.figure()
 plt.stem(freq,np.abs(host_spec), basefmt=" ", markerfmt=" ")
-plt.xlim(0,f_range[1])
+#plt.xlim(0,f_range[1])
 plt.show()
 print("Program Complete")
