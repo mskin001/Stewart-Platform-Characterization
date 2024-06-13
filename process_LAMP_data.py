@@ -17,14 +17,14 @@ file_name = "RW011-Su-p05-p5-p5-p5-HF.csv"
 #file_name = "RW014-Su-p25-p25-p1-1p2.csv"
 saveTFdata = True
 
-plotResponse = False
+plotResponse = True
 plotDiff = False
 plotSorted = False
 plotSortedDiff = False
 plotDirComp = False
-plotSpec = False
+plotSpec = True
 plotDiffSpec = False
-plotBode = False
+plotBode = True
 
 # %% -----------------------------------------------------------------------------------------
 dt = 0.01
